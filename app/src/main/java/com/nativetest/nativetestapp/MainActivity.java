@@ -1,6 +1,8 @@
 package com.nativetest.nativetestapp;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -19,9 +21,20 @@ import android.hardware.usb.UsbDevice;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "NativetestLog";
+
+    private String debugData = "";
+
     // Used to load the 'native-lib' library on application startup.
     static {
         System.loadLibrary("native-lib");
+    }
+
+    public void addDebugString(String str){
+        this.debugData = this.debugData + str + "\n";
+        MultiAutoCompleteTextView tv = findViewById(R.id.multiAutoCompleteTextView);
+        tv.setText(this.debugData);
+        Log.i(TAG, str);
     }
 
     @Override
@@ -31,22 +44,14 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        this.addDebugString("Starting Native Test App");
 
-        // Example of a call to a native method
-        TextView tv = (TextView) findViewById(R.id.sample_text);
-        tv.setText(stringFromJNI());
-
-        UsbManager usbManager = (UsbManager) getSystemService(USB_SERVICE);
+        stringFromJNI();
+        doSomeWorkJNI();
+        this.addDebugString(this.getDebugStringJNI());
 
         //https://github.com/mik3y/usb-serial-for-android/tree/master/usbSerialForAndroid/src/main/java/com/hoho/android/usbserial/driver
+        UsbManager usbManager = (UsbManager) getSystemService(USB_SERVICE);
 
         for (final UsbDevice usbDevice : usbManager.getDeviceList().values()) {
 
@@ -54,14 +59,10 @@ public class MainActivity extends AppCompatActivity {
             String productName = usbDevice.getProductName();
             String serialNumber = usbDevice.getSerialNumber();
 
-            System.out.println("USB Device name: "+name);
-            System.out.println(" Product name: "+productName);
-            System.out.println(" Serial number: "+serialNumber);
+            this.addDebugString("USB Device name: "+name);
+            this.addDebugString(" Product name: "+productName);
+            this.addDebugString(" Serial number: "+serialNumber);
         }
-
-
-
-
     }
 
     @Override
@@ -91,4 +92,6 @@ public class MainActivity extends AppCompatActivity {
      * which is packaged with this application.
      */
     public native String stringFromJNI();
+    public native String getDebugStringJNI();
+    public native String doSomeWorkJNI();
 }
