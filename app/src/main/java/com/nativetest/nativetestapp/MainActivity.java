@@ -44,16 +44,21 @@ public class MainActivity extends AppCompatActivity {
         TextView tv = (TextView) findViewById(R.id.sample_text);
         tv.setText(stringFromJNI());
 
-
         UsbManager usbManager = (UsbManager) getSystemService(USB_SERVICE);
+
         //https://github.com/mik3y/usb-serial-for-android/tree/master/usbSerialForAndroid/src/main/java/com/hoho/android/usbserial/driver
 
         for (final UsbDevice usbDevice : usbManager.getDeviceList().values()) {
-            //final UsbSerialDriver driver = probeDevice(usbDevice);
-            //if (driver != null) {
-            //    result.add(driver);
-            //}
+
+            String name = usbDevice.getDeviceName();
+            String productName = usbDevice.getProductName();
+            String serialNumber = usbDevice.getSerialNumber();
+
+            System.out.println("USB Device name: "+name);
+            System.out.println(" Product name: "+productName);
+            System.out.println(" Serial number: "+serialNumber);
         }
+
 
 
 
