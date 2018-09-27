@@ -27,6 +27,32 @@ public class MainActivity extends AppCompatActivity {
 
     // Used to load the 'native-lib' library on application startup.
     static {
+        /*
+         * To simplify our examples we try to load all possible FMOD
+         * libraries, the Android.mk will copy in the correct ones
+         * for each example. For real products you would just load
+         * 'fmod' and if you use the FMOD Studio tool you would also
+         * load 'fmodstudio'.
+         */
+
+        // Try debug libraries...
+        try {
+            System.loadLibrary("fmodD");
+        }
+        catch (UnsatisfiedLinkError e) { }
+
+        // Try logging libraries...
+        try {
+            System.loadLibrary("fmodL");
+        }
+        catch (UnsatisfiedLinkError e) { }
+
+        // Try release libraries...
+        try {
+            System.loadLibrary("fmod");
+        }
+        catch (UnsatisfiedLinkError e) { }
+
         System.loadLibrary("native-lib");
     }
 
@@ -35,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
         MultiAutoCompleteTextView tv = findViewById(R.id.multiAutoCompleteTextView);
         tv.setText(this.debugData);
         Log.i(TAG, str);
+    }
+    public void updateJNIDebugStrings(){
+        this.addDebugString(this.getDebugStringJNI());
     }
 
     @Override
@@ -48,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
 
         stringFromJNI();
         doSomeWorkJNI();
-        this.addDebugString(this.getDebugStringJNI());
 
         //https://github.com/mik3y/usb-serial-for-android/tree/master/usbSerialForAndroid/src/main/java/com/hoho/android/usbserial/driver
         UsbManager usbManager = (UsbManager) getSystemService(USB_SERVICE);
@@ -63,6 +91,18 @@ public class MainActivity extends AppCompatActivity {
             this.addDebugString(" Product name: "+productName);
             this.addDebugString(" Serial number: "+serialNumber);
         }
+
+        org.fmod.FMOD.init(this);
+
+//        mThread = new Thread(this, "Example Main");
+//        mThread.start();
+//
+//        setStateCreate();
+
+        createFMODJNI();
+
+        this.updateJNIDebugStrings();
+
     }
 
     @Override
@@ -94,4 +134,6 @@ public class MainActivity extends AppCompatActivity {
     public native String stringFromJNI();
     public native String getDebugStringJNI();
     public native String doSomeWorkJNI();
+    public native int createFMODJNI();
+
 }
