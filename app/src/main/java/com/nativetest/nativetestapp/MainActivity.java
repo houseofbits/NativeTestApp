@@ -16,13 +16,22 @@ import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
 import android.hardware.usb.UsbDevice;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import android.view.InputDevice;
+import android.view.InputDevice.MotionRange;
+import android.view.MotionEvent;
+
 //<permissions>
 //        <feature name="android.hardware.usb.host"/>
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnGenericMotionListener {
 
     private static final String TAG = "NativetestLog";
 
+//    private ExecutorService fixedThreadPool;
+//    private PlayerThread playerThread;
     private String debugData = "";
 
     // Used to load the 'native-lib' library on application startup.
@@ -56,6 +65,13 @@ public class MainActivity extends AppCompatActivity {
         System.loadLibrary("native-lib");
     }
 
+//    class PlayerThread implements Runnable {
+//        @Override
+//        public void run() {
+//
+//        }
+//    }
+
     public void addDebugString(String str){
         this.debugData = this.debugData + str + "\n";
         MultiAutoCompleteTextView tv = findViewById(R.id.multiAutoCompleteTextView);
@@ -75,9 +91,6 @@ public class MainActivity extends AppCompatActivity {
 
         this.addDebugString("Starting Native Test App");
 
-        stringFromJNI();
-        doSomeWorkJNI();
-
         //https://github.com/mik3y/usb-serial-for-android/tree/master/usbSerialForAndroid/src/main/java/com/hoho/android/usbserial/driver
         UsbManager usbManager = (UsbManager) getSystemService(USB_SERVICE);
 
@@ -92,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
             this.addDebugString(" Serial number: "+serialNumber);
         }
 
+        initController();
+
         org.fmod.FMOD.init(this);
 
 //        mThread = new Thread(this, "Example Main");
@@ -101,8 +116,18 @@ public class MainActivity extends AppCompatActivity {
 
         createFMODJNI();
 
+        loadSoundJNI("file:///android_asset/test1.wav",0);
+//        loadSoundJNI("file:///android_asset/test2.wav",1);
+//        loadSoundJNI("file:///android_asset/test3.wav",2);
+//        loadSoundJNI("file:///android_asset/test4.wav",3);
+//        loadSoundJNI("file:///android_asset/test5.wav",4);
+//        loadSoundJNI("file:///android_asset/test6.wav",5);
+//        loadSoundJNI("file:///android_asset/test7.wav",6);
+//        loadSoundJNI("file:///android_asset/test8.wav",7);
+
         this.updateJNIDebugStrings();
 
+        //fixedThreadPool = Executors.newFixedThreadPool(1);
     }
 
     @Override
@@ -120,20 +145,45 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.switch_console) {
+            MultiAutoCompleteTextView tv = findViewById(R.id.multiAutoCompleteTextView);
+            if(item.isChecked()){
+                tv.setVisibility(View.VISIBLE);
+            }else{
+                tv.setVisibility(View.INVISIBLE);
+            }
+
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    public void initController(){
+
+        for(int deviceId: InputDevice.getDeviceIds()) {
+
+            InputDevice device = InputDevice.getDevice(deviceId);
+
+            String controllerName = device.getName();
+
+            this.addDebugString("Controller: "+controllerName);
+
+        }
+
+        //this.addGenericMotionListener(this);
+    }
+    @Override
+    public boolean onGenericMotion (View view, MotionEvent motionEvent) {
+
+        return true;
+    }
     /**
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
      */
-    public native String stringFromJNI();
     public native String getDebugStringJNI();
-    public native String doSomeWorkJNI();
+    public native int loadSoundJNI(String filename, int index);
     public native int createFMODJNI();
 
 }
