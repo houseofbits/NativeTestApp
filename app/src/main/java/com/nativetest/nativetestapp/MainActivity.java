@@ -2,7 +2,9 @@ package com.nativetest.nativetestapp;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.CompoundButton;
 import android.widget.MultiAutoCompleteTextView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -86,8 +88,19 @@ public class MainActivity extends AppCompatActivity implements View.OnGenericMot
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
+        Switch switch_button = (Switch) findViewById(R.id.switch_console);
+        switch_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                MultiAutoCompleteTextView tv = findViewById(R.id.multiAutoCompleteTextView);
+                if(isChecked){
+                    tv.setVisibility(View.VISIBLE);
+                }else{
+                    tv.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
 
         this.addDebugString("Starting Native Test App");
 
@@ -130,12 +143,12 @@ public class MainActivity extends AppCompatActivity implements View.OnGenericMot
         //fixedThreadPool = Executors.newFixedThreadPool(1);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        return true;
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -145,16 +158,16 @@ public class MainActivity extends AppCompatActivity implements View.OnGenericMot
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.switch_console) {
-            MultiAutoCompleteTextView tv = findViewById(R.id.multiAutoCompleteTextView);
-            if(item.isChecked()){
-                tv.setVisibility(View.VISIBLE);
-            }else{
-                tv.setVisibility(View.INVISIBLE);
-            }
-
-            return true;
-        }
+//        if (id == R.id.switch_console) {
+//            MultiAutoCompleteTextView tv = findViewById(R.id.multiAutoCompleteTextView);
+//            if(item.isChecked()){
+//                tv.setVisibility(View.VISIBLE);
+//            }else{
+//                tv.setVisibility(View.INVISIBLE);
+//            }
+//
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
