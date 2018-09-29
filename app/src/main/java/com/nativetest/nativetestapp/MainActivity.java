@@ -5,8 +5,10 @@ import android.support.v4.view.InputDeviceCompat;
 import android.util.Log;
 import android.view.InputDevice;
 import android.view.MotionEvent;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.MultiAutoCompleteTextView;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -15,11 +17,12 @@ import android.view.MenuItem;
 import android.hardware.usb.UsbManager;
 import android.hardware.usb.UsbDevice;
 
-import com.google.android.things.pio.PeripheralManager;
-import com.google.android.things.pio.UartDevice;
-import com.google.android.things.pio.UartDeviceCallback;
+import com.nativetest.nativetestapp.driver.UsbSerialDriver;
+import com.nativetest.nativetestapp.driver.UsbSerialPort;
+import com.nativetest.nativetestapp.driver.UsbSerialProber;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 //<permissions>
@@ -27,13 +30,15 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private SerialComunication serial = new SerialComunication(this);
+    public ChannelData channelData = new ChannelData();
+//    private UsbManager mUsbManager;
+//    private UsbSerialPort serialPort = null;
     private static final String TAG = "NativetestLog";
 
 //    private ExecutorService fixedThreadPool;
 //    private PlayerThread playerThread;
     private String debugData = "";
-
-    private UartDevice mDevice = null;
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -93,50 +98,122 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Button sendButton = findViewById(R.id.uartSendButton);
+        sendButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                serial.writeDataFrame(channelData);
+            }
+        });
+
+        class DimmerBarChangeListener implements SeekBar.OnSeekBarChangeListener {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                switch (seekBar.getId()){
+                    case R.id.dimmerBar1:
+                        channelData.val0 = progress;
+                        break;
+                    case R.id.dimmerBar2:
+                        channelData.val1 = progress;
+                        break;
+                    case R.id.dimmerBar3:
+                        channelData.val2 = progress;
+                        break;
+                    case R.id.dimmerBar4:
+                        channelData.val3 = progress;
+                        break;
+                    case R.id.dimmerBar5:
+                        channelData.val4 = progress;
+                        break;
+                    case R.id.dimmerBar6:
+                        channelData.val5 = progress;
+                        break;
+                    case R.id.dimmerBar7:
+                        channelData.val6 = progress;
+                        break;
+                    case R.id.dimmerBar8:
+                        channelData.val7 = progress;
+                        break;
+                }
+            }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {  }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {  }
+        }
+        DimmerBarChangeListener dimmerBarChangeListener = new DimmerBarChangeListener();
+
+        SeekBar bar1 = (SeekBar) findViewById(R.id.dimmerBar1);
+        bar1.setOnSeekBarChangeListener(dimmerBarChangeListener);
+
+        SeekBar bar2 = (SeekBar) findViewById(R.id.dimmerBar2);
+        bar2.setOnSeekBarChangeListener(dimmerBarChangeListener);
+
+        SeekBar bar3 = (SeekBar) findViewById(R.id.dimmerBar3);
+        bar3.setOnSeekBarChangeListener(dimmerBarChangeListener);
+
+        SeekBar bar4 = (SeekBar) findViewById(R.id.dimmerBar4);
+        bar4.setOnSeekBarChangeListener(dimmerBarChangeListener);
+
+        SeekBar bar5 = (SeekBar) findViewById(R.id.dimmerBar5);
+        bar5.setOnSeekBarChangeListener(dimmerBarChangeListener);
+
+        SeekBar bar6 = (SeekBar) findViewById(R.id.dimmerBar6);
+        bar6.setOnSeekBarChangeListener(dimmerBarChangeListener);
+
+        SeekBar bar7 = (SeekBar) findViewById(R.id.dimmerBar7);
+        bar7.setOnSeekBarChangeListener(dimmerBarChangeListener);
+
+        SeekBar bar8 = (SeekBar) findViewById(R.id.dimmerBar8);
+        bar8.setOnSeekBarChangeListener(dimmerBarChangeListener);
+
         this.addDebugString("Starting Native Test App");
 
-        //https://github.com/mik3y/usb-serial-for-android/tree/master/usbSerialForAndroid/src/main/java/com/hoho/android/usbserial/driver
-        UsbManager usbManager = (UsbManager) getSystemService(USB_SERVICE);
+///////////////////////////////////////////////////////////////////////
+// Debug
+//        channelData.val0 = 1;
+//        channelData.val1 = 2;
+//        channelData.val2 = 3;
+//        channelData.val3 = 4;
+//        serial.writeDataFrame(channelData);
 
-        for (final UsbDevice usbDevice : usbManager.getDeviceList().values()) {
+//        int[] crcInData = {255,122,54};
+//        int crc_val = CRC8JNI(crcInData, 3);
+//        this.addDebugString("CRC = "+Integer.toString(crc_val));
 
-            String name = usbDevice.getDeviceName();
-            String productName = usbDevice.getProductName();
-            String serialNumber = usbDevice.getSerialNumber();
+//        byte out = bytetestJNI((byte)60);
+//        this.addDebugString("int 60 = "+Byte.toString(out));
+//        out = bytetestJNI((byte)128);
+//        this.addDebugString("int 128 = "+Byte.toString(out));
+//        out = bytetestJNI((byte)255);
+//        this.addDebugString("int 255 = "+Byte.toString(out));
+//        out = bytetestJNI((byte)185);
+//        this.addDebugString("int 185 = "+Byte.toString(out));
 
-            this.addDebugString("USB Device name: "+name);
-            this.addDebugString(" Product name: "+productName);
-            this.addDebugString(" Serial number: "+serialNumber);
-        }
+//        mUsbManager = (UsbManager) getSystemService(USB_SERVICE);
+//        for (final UsbDevice usbDevice : mUsbManager.getDeviceList().values()) {
+//
+//            String name = usbDevice.getDeviceName();
+//            String productName = usbDevice.getProductName();
+//            String serialNumber = usbDevice.getSerialNumber();
+//
+//            this.addDebugString("USB Device name: "+name);
+//            this.addDebugString(" Product name: "+productName);
+//            this.addDebugString(" Serial number: "+serialNumber);
+//        }
+
+        serial.connectDevice();
 
         checkController();
 
-        //UART Devices
-        try{
-            PeripheralManager manager = PeripheralManager.getInstance();
-        }catch(Exception i){
-            this.addDebugString(i.getMessage());
-        }
-        //this.addDebugString(manager.toString());
-//        List<String> deviceList = manager.getUartDeviceList();
-//        if(deviceList.isEmpty()){
-//            this.addDebugString("No UART port available on this device.");
-//        }else{
-//            for (int i=0; i<deviceList.size(); i++){
-//                this.addDebugString("UART Device: " + deviceList.get(i));
-//            }
-//        }
-
         org.fmod.FMOD.init(this);
-
+// ???
 //        mThread = new Thread(this, "Example Main");
 //        mThread.start();
-//
-//        setStateCreate();
 
-        createFMODJNI();
-
-        loadSoundJNI("file:///android_asset/test1.wav",0);
+//        createFMODJNI();
+//        loadSoundJNI("file:///android_asset/test1.wav",0);
 //        loadSoundJNI("file:///android_asset/test2.wav",1);
 //        loadSoundJNI("file:///android_asset/test3.wav",2);
 //        loadSoundJNI("file:///android_asset/test4.wav",3);
@@ -154,62 +231,35 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-        if (mDevice != null) {
-            try {
-                mDevice.close();
-                mDevice = null;
-            } catch (IOException e) {
-                this.addDebugString("Unable to close UART device: "+ e);
-            }
-        }
     }
-/*
-    public void openUARTDevice(String devicename) throws IOException {
-        // Attempt to access the UART device
-        try{
-            PeripheralManager manager = PeripheralManager.getInstance();
-            mDevice = manager.openUartDevice(devicename);
-        }catch (IOException e){
-            this.addDebugString("Unable to access UART device: "+e);
-        }
-        if(mDevice != null) {
-            mDevice.setBaudrate(115200);
-            mDevice.setDataSize(8);
-            mDevice.setParity(UartDevice.PARITY_NONE);
-            mDevice.setStopBits(1);
-            mDevice.setHardwareFlowControl(UartDevice.HW_FLOW_CONTROL_NONE);
-        }
-    }
-    public void writeUARTData(byte data[]) throws IOException {
-        if(mDevice != null){
-            mDevice.write(data, data.length);
-        }
-    }
-    */
-
     public void checkController(){
         for(int deviceId: InputDevice.getDeviceIds()) {
             InputDevice device = InputDevice.getDevice(deviceId);
-            String controllerName = device.getName();
-            this.addDebugString("Controller: "+controllerName+" is constroller "+isController(device));
+            if(isController(device)) {
+                String controllerName = device.getName();
+                this.addDebugString("Input device found: " + controllerName);
+            }
         }
     }
 
     @Override
     public boolean dispatchGenericMotionEvent(final MotionEvent event) {
         if(!isController(event.getDevice())){
-        //if((event.getSource()&InputDeviceCompat.SOURCE_JOYSTICK)!=InputDeviceCompat.SOURCE_JOYSTICK ){
             return super.dispatchGenericMotionEvent(event);
         }
 
-        int historySize = event.getHistorySize();
-        for (int i = 0; i < historySize; i++) {
+//        writeControllerDebugText("0: "+event.getAxisValue(MotionEvent.AXIS_X));
+//        writeControllerDebugText("1: "+event.getAxisValue(MotionEvent.AXIS_Y));
+//        writeControllerDebugText("2: "+event.getAxisValue(MotionEvent.AXIS_Z));
+
+        //int historySize = event.getHistorySize();
+        //for (int i = 0; i < historySize; i++) {
             // Process the event at historical position i
-            this.addDebugString("JOYSTICKMOVE "+event.getHistoricalAxisValue(MotionEvent.AXIS_Y,i)+"  "+event.getHistoricalAxisValue(MotionEvent.AXIS_Z,i));
-            processJoystickInput(event,  i);
-        }
+            //this.addDebugString("JOYSTICKMOVE "+event.getHistoricalAxisValue(MotionEvent.AXIS_Y,i)+"  "+event.getHistoricalAxisValue(MotionEvent.AXIS_Z,i));
+           // processJoystickInput(event,  i);
+       // }
         // Process current position
-        this.addDebugString("JOYSTICKMOVE "+event.getAxisValue(MotionEvent.AXIS_Y)+" "+event.getAxisValue(MotionEvent.AXIS_Z));
+        //this.addDebugString("JOYSTICKMOVE "+event.getAxisValue(MotionEvent.AXIS_Y)+" "+event.getAxisValue(MotionEvent.AXIS_Z));
 
         return true;
     }
@@ -269,6 +319,12 @@ public class MainActivity extends AppCompatActivity {
                 || (device.getKeyboardType() != InputDevice.KEYBOARD_TYPE_ALPHABETIC));
     }
 
+    public void writeControllerDebugText(String str){
+        MultiAutoCompleteTextView tv = findViewById(R.id.controllerDebugText);
+        tv.setText(str);
+        Log.i(TAG, str);
+    }
+
     /**
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
@@ -276,5 +332,7 @@ public class MainActivity extends AppCompatActivity {
     public native String getDebugStringJNI();
     public native int loadSoundJNI(String filename, int index);
     public native int createFMODJNI();
+    public native int CRC8JNI(int data[], int len);
+    public native byte bytetestJNI(byte in);
 
 }
