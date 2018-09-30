@@ -9,45 +9,20 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <MultiAutoCompleteTextView
-        android:id="@+id/controllerDebugText"
-        android:layout_width="0dp"
-        android:layout_height="44dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@android:color/darker_gray"
-        android:backgroundTint="@android:color/darker_gray"
-        android:backgroundTintMode="src_over"
-        android:editable="false"
-        android:gravity="top|right"
-        android:inputType="none"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:textAlignment="textStart"
-        android:textColor="@android:color/white"
-        android:textSize="10sp"
-        android:verticalScrollbarPosition="right"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TableLayout
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintStart_toStartOf="parent">
 
-        <TableRow
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="visible">
 
             <TextView
                 android:id="@+id/textView1"
@@ -63,19 +38,26 @@
             <SeekBar
                 android:id="@+id/dimmerBar1"
                 style="@android:style/Widget.Material.SeekBar"
-                android:layout_width="match_parent"
+                android:layout_width="479dp"
                 android:layout_height="wrap_content"
                 android:max="255"
-                android:paddingTop="2dp"
                 android:paddingBottom="1dp"
                 android:progress="128"
                 tools:layout_editor_absoluteX="47dp"
                 tools:layout_editor_absoluteY="267dp" />
-        </TableRow>
 
-        <TableRow
+            <CheckBox
+                android:id="@+id/playCheck1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Play" />
+
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/textView2"
@@ -91,19 +73,26 @@
             <SeekBar
                 android:id="@+id/dimmerBar2"
                 style="@android:style/Widget.Material.SeekBar"
-                android:layout_width="match_parent"
+                android:layout_width="479dp"
                 android:layout_height="wrap_content"
                 android:max="255"
-                android:paddingTop="2dp"
                 android:paddingBottom="1dp"
                 android:progress="128"
                 tools:layout_editor_absoluteX="47dp"
                 tools:layout_editor_absoluteY="267dp" />
-        </TableRow>
 
-        <TableRow
+            <CheckBox
+                android:id="@+id/playCheck2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Play" />
+
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/textView3"
@@ -119,19 +108,26 @@
             <SeekBar
                 android:id="@+id/dimmerBar3"
                 style="@android:style/Widget.Material.SeekBar"
-                android:layout_width="match_parent"
+                android:layout_width="479dp"
                 android:layout_height="wrap_content"
                 android:max="255"
-                android:paddingTop="2dp"
                 android:paddingBottom="1dp"
                 android:progress="128"
                 tools:layout_editor_absoluteX="47dp"
                 tools:layout_editor_absoluteY="267dp" />
-        </TableRow>
 
-        <TableRow
+            <CheckBox
+                android:id="@+id/playCheck3"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Play" />
+
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/textView4"
@@ -147,19 +143,25 @@
             <SeekBar
                 android:id="@+id/dimmerBar4"
                 style="@android:style/Widget.Material.SeekBar"
-                android:layout_width="match_parent"
+                android:layout_width="479dp"
                 android:layout_height="wrap_content"
                 android:max="255"
-                android:paddingTop="2dp"
                 android:paddingBottom="1dp"
                 android:progress="128"
                 tools:layout_editor_absoluteX="47dp"
                 tools:layout_editor_absoluteY="267dp" />
-        </TableRow>
 
-        <TableRow
+            <CheckBox
+                android:id="@+id/playCheck4"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Play" />
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/textView5"
@@ -175,19 +177,26 @@
             <SeekBar
                 android:id="@+id/dimmerBar5"
                 style="@android:style/Widget.Material.SeekBar"
-                android:layout_width="530dp"
+                android:layout_width="479dp"
                 android:layout_height="wrap_content"
                 android:max="255"
-                android:paddingTop="2dp"
                 android:paddingBottom="1dp"
                 android:progress="128"
                 tools:layout_editor_absoluteX="47dp"
                 tools:layout_editor_absoluteY="267dp" />
-        </TableRow>
 
-        <TableRow
+            <CheckBox
+                android:id="@+id/playCheck5"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Play" />
+
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/textView6"
@@ -203,19 +212,25 @@
             <SeekBar
                 android:id="@+id/dimmerBar6"
                 style="@android:style/Widget.Material.SeekBar"
-                android:layout_width="match_parent"
+                android:layout_width="479dp"
                 android:layout_height="wrap_content"
                 android:max="255"
-                android:paddingTop="2dp"
                 android:paddingBottom="1dp"
                 android:progress="128"
                 tools:layout_editor_absoluteX="47dp"
                 tools:layout_editor_absoluteY="267dp" />
-        </TableRow>
 
-        <TableRow
+            <CheckBox
+                android:id="@+id/playCheck6"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Play" />
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/textView7"
@@ -231,19 +246,26 @@
             <SeekBar
                 android:id="@+id/dimmerBar7"
                 style="@android:style/Widget.Material.SeekBar"
-                android:layout_width="match_parent"
+                android:layout_width="479dp"
                 android:layout_height="wrap_content"
                 android:max="255"
-                android:paddingTop="2dp"
                 android:paddingBottom="1dp"
                 android:progress="128"
                 tools:layout_editor_absoluteX="47dp"
                 tools:layout_editor_absoluteY="267dp" />
-        </TableRow>
 
-        <TableRow
+            <CheckBox
+                android:id="@+id/playCheck7"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Play" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/textView8"
@@ -259,16 +281,63 @@
             <SeekBar
                 android:id="@+id/dimmerBar8"
                 style="@android:style/Widget.Material.SeekBar"
-                android:layout_width="match_parent"
+                android:layout_width="479dp"
                 android:layout_height="wrap_content"
                 android:max="255"
-                android:paddingTop="2dp"
                 android:paddingBottom="1dp"
                 android:progress="128"
                 tools:layout_editor_absoluteX="47dp"
                 tools:layout_editor_absoluteY="267dp" />
-        </TableRow>
-    </TableLayout>
+
+            <CheckBox
+                android:id="@+id/playCheck8"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Play" />
+        </LinearLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </LinearLayout>
+
+    <MultiAutoCompleteTextView
+        android:id="@+id/controllerDebugText"
+        android:layout_width="0dp"
+        android:layout_height="262dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@android:color/darker_gray"
+        android:backgroundTint="@android:color/darker_gray"
+        android:backgroundTintMode="src_over"
+        android:editable="false"
+        android:gravity="top|right"
+        android:inputType="none"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:text="ssdfsdfs"
+        android:textAlignment="textStart"
+        android:textColor="@android:color/white"
+        android:textSize="10sp"
+        android:verticalScrollbarPosition="right"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <MultiAutoCompleteTextView
         android:id="@+id/multiAutoCompleteTextView"
@@ -282,7 +351,7 @@
         android:backgroundTint="@android:color/holo_blue_dark"
         android:backgroundTintMode="src_over"
         android:editable="false"
-        android:gravity="bottom|right"
+        android:gravity="right"
         android:inputType="none"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
@@ -292,12 +361,13 @@
         android:textColor="@android:color/white"
         android:textSize="10sp"
         android:verticalScrollbarPosition="right"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="1.0"
+        tools:text="sdfsfsd" />
 
 </android.support.constraint.ConstraintLayout>

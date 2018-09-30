@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
+import android.util.Log;
 
 import com.nativetest.nativetestapp.driver.UsbSerialDriver;
 import com.nativetest.nativetestapp.driver.UsbSerialPort;
@@ -125,10 +126,12 @@ public class SerialComunication {
             try {
                 mSerialPort.write(data, 0);
             } catch (IOException e) {
-                main.addDebugString("UART Write failed " + e.getMessage());
+                Log.i("UART", "UART Write failed " + e.getMessage());
+                //main.addDebugString("UART Write failed " + e.getMessage());
             }
         }else{
-            main.addDebugString("UART Write failed, no serial port present");
+            Log.i("UART", "UART Write failed, no serial port present");
+            //main.addDebugString("UART Write failed, no serial port present");
         }
     }
     //In: data[8]
@@ -141,14 +144,14 @@ public class SerialComunication {
         serialData[counter++] = 'A';
         serialData[counter++] = 'L';
         serialData[counter++] = 'L';
-        serialData[counter++] = data.val0;
-        serialData[counter++] = data.val1;
-        serialData[counter++] = data.val2;
-        serialData[counter++] = data.val3;
-        serialData[counter++] = data.val4;
-        serialData[counter++] = data.val5;
-        serialData[counter++] = data.val6;
-        serialData[counter++] = data.val7;
+        serialData[counter++] = data.channels[0].value;
+        serialData[counter++] = data.channels[1].value;
+        serialData[counter++] = data.channels[2].value;
+        serialData[counter++] = data.channels[3].value;
+        serialData[counter++] = data.channels[4].value;
+        serialData[counter++] = data.channels[5].value;
+        serialData[counter++] = data.channels[6].value;
+        serialData[counter++] = data.channels[7].value;
         serialData[counter++] = main.CRC8JNI(serialData, (counter-1));
 
 //        for (int i=0; i<counter; i++){

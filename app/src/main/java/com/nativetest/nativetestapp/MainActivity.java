@@ -1,11 +1,17 @@
 package com.nativetest.nativetestapp;
 
+import android.app.LoaderManager;
+import android.content.AsyncTaskLoader;
+import android.content.Context;
+import android.content.Loader;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.InputDeviceCompat;
 import android.util.Log;
 import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.SeekBar;
@@ -102,38 +108,30 @@ public class MainActivity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                serial.writeDataFrame(channelData);
+                //serial.writeDataFrame(channelData);
+                if(isPlayingSoundJNI(0))stopSoundJNI(0);
+                else playSoundJNI(0);
             }
         });
 
         class DimmerBarChangeListener implements SeekBar.OnSeekBarChangeListener {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                int idx = -1;
                 switch (seekBar.getId()){
-                    case R.id.dimmerBar1:
-                        channelData.val0 = progress;
-                        break;
-                    case R.id.dimmerBar2:
-                        channelData.val1 = progress;
-                        break;
-                    case R.id.dimmerBar3:
-                        channelData.val2 = progress;
-                        break;
-                    case R.id.dimmerBar4:
-                        channelData.val3 = progress;
-                        break;
-                    case R.id.dimmerBar5:
-                        channelData.val4 = progress;
-                        break;
-                    case R.id.dimmerBar6:
-                        channelData.val5 = progress;
-                        break;
-                    case R.id.dimmerBar7:
-                        channelData.val6 = progress;
-                        break;
-                    case R.id.dimmerBar8:
-                        channelData.val7 = progress;
-                        break;
+                    case R.id.dimmerBar1: idx = 0;  break;
+                    case R.id.dimmerBar2: idx = 1;  break;
+                    case R.id.dimmerBar3: idx = 2;  break;
+                    case R.id.dimmerBar4: idx = 3;  break;
+                    case R.id.dimmerBar5: idx = 4;  break;
+                    case R.id.dimmerBar6: idx = 5;  break;
+                    case R.id.dimmerBar7: idx = 6;  break;
+                    case R.id.dimmerBar8: idx = 7;  break;
+                }
+                if(idx >= 0){
+                    channelData.channels[idx].value = progress;
+                    ChannelData.Channel ch = channelData.channels[idx];
+                    soundChannelMixJNI(idx, ch.getAudioALeft(),ch.getAudioARight(),ch.getAudioBLeft(),ch.getAudioBRight());
                 }
             }
             @Override
@@ -142,31 +140,66 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {  }
         }
+
+        class PlaySoundCheckBoxListener implements View.OnClickListener
+        {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()){
+                    case R.id.playCheck1:
+                        playPause(((CheckBox) v).isChecked(), 0);
+                        break;
+                    case R.id.playCheck2:
+                        playPause(((CheckBox) v).isChecked(), 1);
+                        break;
+                    case R.id.playCheck3:
+                        playPause(((CheckBox) v).isChecked(), 2);
+                        break;
+                    case R.id.playCheck4:
+                        playPause(((CheckBox) v).isChecked(), 3);
+                        break;
+                    case R.id.playCheck5:
+                        playPause(((CheckBox) v).isChecked(), 4);
+                        break;
+                    case R.id.playCheck6:
+                        playPause(((CheckBox) v).isChecked(), 5);
+                        break;
+                    case R.id.playCheck7:
+                        playPause(((CheckBox) v).isChecked(), 6);
+                        break;
+                    case R.id.playCheck8:
+                        playPause(((CheckBox) v).isChecked(), 7);
+                        break;
+                }
+            }
+        }
+
         DimmerBarChangeListener dimmerBarChangeListener = new DimmerBarChangeListener();
+        PlaySoundCheckBoxListener playSoundCheckBoxListener = new PlaySoundCheckBoxListener();
 
-        SeekBar bar1 = (SeekBar) findViewById(R.id.dimmerBar1);
-        bar1.setOnSeekBarChangeListener(dimmerBarChangeListener);
+        findViewById(R.id.playCheck1).setOnClickListener(playSoundCheckBoxListener);
+        ((SeekBar) findViewById(R.id.dimmerBar1)).setOnSeekBarChangeListener(dimmerBarChangeListener);
 
-        SeekBar bar2 = (SeekBar) findViewById(R.id.dimmerBar2);
-        bar2.setOnSeekBarChangeListener(dimmerBarChangeListener);
+        findViewById(R.id.playCheck2).setOnClickListener(playSoundCheckBoxListener);
+        ((SeekBar) findViewById(R.id.dimmerBar2)).setOnSeekBarChangeListener(dimmerBarChangeListener);
 
-        SeekBar bar3 = (SeekBar) findViewById(R.id.dimmerBar3);
-        bar3.setOnSeekBarChangeListener(dimmerBarChangeListener);
+        findViewById(R.id.playCheck3).setOnClickListener(playSoundCheckBoxListener);
+        ((SeekBar) findViewById(R.id.dimmerBar3)).setOnSeekBarChangeListener(dimmerBarChangeListener);
 
-        SeekBar bar4 = (SeekBar) findViewById(R.id.dimmerBar4);
-        bar4.setOnSeekBarChangeListener(dimmerBarChangeListener);
+        findViewById(R.id.playCheck4).setOnClickListener(playSoundCheckBoxListener);
+        ((SeekBar) findViewById(R.id.dimmerBar4)).setOnSeekBarChangeListener(dimmerBarChangeListener);
 
-        SeekBar bar5 = (SeekBar) findViewById(R.id.dimmerBar5);
-        bar5.setOnSeekBarChangeListener(dimmerBarChangeListener);
+        findViewById(R.id.playCheck5).setOnClickListener(playSoundCheckBoxListener);
+        ((SeekBar) findViewById(R.id.dimmerBar5)).setOnSeekBarChangeListener(dimmerBarChangeListener);
 
-        SeekBar bar6 = (SeekBar) findViewById(R.id.dimmerBar6);
-        bar6.setOnSeekBarChangeListener(dimmerBarChangeListener);
+        findViewById(R.id.playCheck6).setOnClickListener(playSoundCheckBoxListener);
+        ((SeekBar) findViewById(R.id.dimmerBar6)).setOnSeekBarChangeListener(dimmerBarChangeListener);
 
-        SeekBar bar7 = (SeekBar) findViewById(R.id.dimmerBar7);
-        bar7.setOnSeekBarChangeListener(dimmerBarChangeListener);
+        findViewById(R.id.playCheck7).setOnClickListener(playSoundCheckBoxListener);
+        ((SeekBar) findViewById(R.id.dimmerBar7)).setOnSeekBarChangeListener(dimmerBarChangeListener);
 
-        SeekBar bar8 = (SeekBar) findViewById(R.id.dimmerBar8);
-        bar8.setOnSeekBarChangeListener(dimmerBarChangeListener);
+        findViewById(R.id.playCheck8).setOnClickListener(playSoundCheckBoxListener);
+        ((SeekBar) findViewById(R.id.dimmerBar8)).setOnSeekBarChangeListener(dimmerBarChangeListener);
 
         this.addDebugString("Starting Native Test App");
 
@@ -212,19 +245,21 @@ public class MainActivity extends AppCompatActivity {
 //        mThread = new Thread(this, "Example Main");
 //        mThread.start();
 
-//        createFMODJNI();
-//        loadSoundJNI("file:///android_asset/test1.wav",0);
-//        loadSoundJNI("file:///android_asset/test2.wav",1);
-//        loadSoundJNI("file:///android_asset/test3.wav",2);
-//        loadSoundJNI("file:///android_asset/test4.wav",3);
-//        loadSoundJNI("file:///android_asset/test5.wav",4);
-//        loadSoundJNI("file:///android_asset/test6.wav",5);
-//        loadSoundJNI("file:///android_asset/test7.wav",6);
-//        loadSoundJNI("file:///android_asset/test8.wav",7);
+        createFMODJNI();
+        loadSoundJNI("file:///android_asset/voice_1.wav",0);
+        loadSoundJNI("file:///android_asset/voice_2.wav",1);
+        loadSoundJNI("file:///android_asset/voice_3.wav",2);
+        loadSoundJNI("file:///android_asset/voice_4.wav",3);
+        loadSoundJNI("file:///android_asset/voice_5.wav",4);
+        loadSoundJNI("file:///android_asset/voice_6.wav",5);
+        loadSoundJNI("file:///android_asset/voice_7.wav",6);
+        loadSoundJNI("file:///android_asset/voice_8.wav",7);
 
         this.updateJNIDebugStrings();
 
         //fixedThreadPool = Executors.newFixedThreadPool(1);
+
+        new MyTask().execute("test");
     }
 
     @Override
@@ -242,15 +277,66 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void setAxisChange(int index, float value){
+        switch(index){
+            case 0:
+                SeekBar bar1 = (SeekBar) findViewById(R.id.dimmerBar1);
+                bar1.setProgress((int)(255.0f * value));
+                break;
+            case 1:
+                SeekBar bar2 = (SeekBar) findViewById(R.id.dimmerBar2);
+                bar2.setProgress((int)(255.0f * value));
+                break;
+            case 2:
+                SeekBar bar3 = (SeekBar) findViewById(R.id.dimmerBar3);
+                bar3.setProgress((int)(255.0f * value));
+                break;
+            case 3:
+                SeekBar bar4 = (SeekBar) findViewById(R.id.dimmerBar4);
+                bar4.setProgress((int)(255.0f * value));
+                break;
+        }
+    }
+
+    //1 - X AXIS
+    //2 - Y AXIS
+    //3 - Z AXIS
+    //4 - X ROTATION
+
     @Override
     public boolean dispatchGenericMotionEvent(final MotionEvent event) {
         if(!isController(event.getDevice())){
             return super.dispatchGenericMotionEvent(event);
         }
 
-//        writeControllerDebugText("0: "+event.getAxisValue(MotionEvent.AXIS_X));
-//        writeControllerDebugText("1: "+event.getAxisValue(MotionEvent.AXIS_Y));
-//        writeControllerDebugText("2: "+event.getAxisValue(MotionEvent.AXIS_Z));
+//        String debug = "---------------- motion ------------------";
+//        int i = MotionEvent.AXIS_X;
+//        debug = debug + "\n" + MotionEvent.axisToString(i) + " = " + event.getAxisValue(i);
+//        i = MotionEvent.AXIS_Y;
+//        debug = debug + "\n" + MotionEvent.axisToString(i) + " = " + event.getAxisValue(i);
+//        i = MotionEvent.AXIS_Z;
+//        debug = debug + "\n" + MotionEvent.axisToString(i) + " = " + event.getAxisValue(i);
+//        i = MotionEvent.AXIS_RX;
+//        debug = debug + "\n" + MotionEvent.axisToString(i) + " = " + event.getAxisValue(i);
+//        writeControllerDebugText(debug);
+
+
+        float axis_0 = event.getAxisValue(MotionEvent.AXIS_X);  //value -1:1
+        axis_0 = (axis_0 + 1.0f) * 0.5f;                        //value 0:1
+        setAxisChange(0, axis_0);
+
+        float axis_1 = event.getAxisValue(MotionEvent.AXIS_Y);
+        axis_1 = (axis_1 + 1.0f) * 0.5f;
+        setAxisChange(1, axis_1);
+
+        float axis_2 = event.getAxisValue(MotionEvent.AXIS_Z);
+        axis_2 = (axis_2 + 1.0f) * 0.5f;
+        setAxisChange(2, axis_2);
+
+        float axis_3 = event.getAxisValue(MotionEvent.AXIS_RX);
+        axis_3 = (axis_3 + 1.0f) * 0.5f;
+        setAxisChange(3, axis_3);
+
 
         //int historySize = event.getHistorySize();
         //for (int i = 0; i < historySize; i++) {
@@ -263,6 +349,7 @@ public class MainActivity extends AppCompatActivity {
 
         return true;
     }
+    /*
     private void processJoystickInput(MotionEvent event, int historyPos) {
 
         InputDevice mInputDevice = event.getDevice();
@@ -312,7 +399,7 @@ public class MainActivity extends AppCompatActivity {
         }
         return 0;
     }
-
+*/
     private boolean isController(InputDevice device) {
         return ((device.getSources() & InputDevice.SOURCE_CLASS_JOYSTICK) == InputDevice.SOURCE_CLASS_JOYSTICK)
                 && (((device.getSources() & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD)
@@ -325,14 +412,44 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, str);
     }
 
+
+    private class MyTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            while(true){
+                serial.writeDataFrame(channelData);
+                try {
+                    Thread.sleep(1000/30);
+                } catch (InterruptedException e) {
+                    return "";
+                }
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            // do something with result
+        }
+    }
+
+    public void playPause(boolean play, int index){
+        if(play){
+            playSoundJNI(index);
+        }else{
+            stopSoundJNI(index);
+        }
+    }
     /**
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
      */
     public native String getDebugStringJNI();
     public native int loadSoundJNI(String filename, int index);
+    public native int playSoundJNI(int index);
+    public native int stopSoundJNI(int index);
+    public native int soundChannelMixJNI(int index, float Al, float Ar, float Bl, float Br);
+    public native boolean isPlayingSoundJNI(int index);
     public native int createFMODJNI();
     public native int CRC8JNI(int data[], int len);
-    public native byte bytetestJNI(byte in);
-
 }
