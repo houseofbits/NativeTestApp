@@ -145,7 +145,7 @@ Java_com_nativetest_nativetestapp_MainActivity_createFMODJNI(
 }
 
 extern "C" JNIEXPORT jint JNICALL
-Java_com_nativetest_nativetestapp_MainActivity_loadSoundJNI(
+Java_com_nativetest_nativetestapp_ChannelData_loadSoundJNI(
         JNIEnv* env,
         jobject,
         jstring filename,
@@ -167,8 +167,9 @@ Java_com_nativetest_nativetestapp_MainActivity_loadSoundJNI(
     return 0;
 }
 
+
 extern "C" JNIEXPORT jint JNICALL
-Java_com_nativetest_nativetestapp_MainActivity_playSoundJNI(
+Java_com_nativetest_nativetestapp_ChannelData_playSoundJNI(
         JNIEnv* env,
         jobject,
         jint index) {
@@ -185,7 +186,7 @@ Java_com_nativetest_nativetestapp_MainActivity_playSoundJNI(
 }
 
 extern "C" JNIEXPORT jint JNICALL
-Java_com_nativetest_nativetestapp_MainActivity_soundChannelMixJNI(
+Java_com_nativetest_nativetestapp_ChannelData_soundChannelMixJNI(
         JNIEnv* env,
         jobject,
         jint index,
@@ -199,13 +200,13 @@ Java_com_nativetest_nativetestapp_MainActivity_soundChannelMixJNI(
     bool isPlaying = false;
     channels[index]->isPlaying(&isPlaying);
     if(isPlaying){
-
+        channels[index]->setMixLevelsOutput(al, ar, 0, 0, 0, 0, bl, br);
     }
     return 0;
 }
 
 extern "C" JNIEXPORT jint JNICALL
-Java_com_nativetest_nativetestapp_MainActivity_stopSoundJNI(
+Java_com_nativetest_nativetestapp_ChannelData_stopSoundJNI(
         JNIEnv* env,
         jobject,
         jint index) {
@@ -219,7 +220,7 @@ Java_com_nativetest_nativetestapp_MainActivity_stopSoundJNI(
 }
 
 extern "C" JNIEXPORT jboolean JNICALL
-Java_com_nativetest_nativetestapp_MainActivity_isPlayingSoundJNI(
+Java_com_nativetest_nativetestapp_ChannelData_isPlayingSoundJNI(
         JNIEnv* env,
         jobject,
         jint index) {

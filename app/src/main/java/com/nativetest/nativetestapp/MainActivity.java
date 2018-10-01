@@ -1,15 +1,11 @@
 package com.nativetest.nativetestapp;
 
-import android.app.LoaderManager;
-import android.content.AsyncTaskLoader;
-import android.content.Context;
-import android.content.Loader;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.view.InputDeviceCompat;
 import android.util.Log;
 import android.view.InputDevice;
 import android.view.MotionEvent;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -18,18 +14,6 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.MenuItem;
-
-import android.hardware.usb.UsbManager;
-import android.hardware.usb.UsbDevice;
-
-import com.nativetest.nativetestapp.driver.UsbSerialDriver;
-import com.nativetest.nativetestapp.driver.UsbSerialPort;
-import com.nativetest.nativetestapp.driver.UsbSerialProber;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 //<permissions>
 //        <feature name="android.hardware.usb.host"/>
@@ -38,12 +22,8 @@ public class MainActivity extends AppCompatActivity {
 
     private SerialComunication serial = new SerialComunication(this);
     public ChannelData channelData = new ChannelData();
-//    private UsbManager mUsbManager;
-//    private UsbSerialPort serialPort = null;
     private static final String TAG = "NativetestLog";
 
-//    private ExecutorService fixedThreadPool;
-//    private PlayerThread playerThread;
     private String debugData = "";
 
     // Used to load the 'native-lib' library on application startup.
@@ -69,13 +49,6 @@ public class MainActivity extends AppCompatActivity {
         System.loadLibrary("native-lib");
     }
 
-//    class PlayerThread implements Runnable {
-//        @Override
-//        public void run() {
-//
-//        }
-//    }
-
     public void addDebugString(String str){
         this.debugData = this.debugData + str + "\n";
         MultiAutoCompleteTextView tv = findViewById(R.id.multiAutoCompleteTextView);
@@ -95,12 +68,12 @@ public class MainActivity extends AppCompatActivity {
         switch_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                MultiAutoCompleteTextView tv = findViewById(R.id.multiAutoCompleteTextView);
-                if(isChecked){
-                    tv.setVisibility(View.VISIBLE);
-                }else{
-                    tv.setVisibility(View.INVISIBLE);
-                }
+            MultiAutoCompleteTextView tv = findViewById(R.id.multiAutoCompleteTextView);
+            if(isChecked){
+                tv.setVisibility(View.VISIBLE);
+            }else{
+                tv.setVisibility(View.INVISIBLE);
+            }
             }
         });
 
@@ -109,14 +82,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //serial.writeDataFrame(channelData);
-                if(isPlayingSoundJNI(0))stopSoundJNI(0);
-                else playSoundJNI(0);
+//                if(channelData.isPlayingSoundJNI(0))channelData.stopSoundJNI(0);
+//                else channelData.playSoundJNI(0);
             }
         });
 
-        class DimmerBarChangeListener implements SeekBar.OnSeekBarChangeListener {
+        class DimmerBarChangeListener implements SeekBar.OnSeekBarChangeListener{
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser){
                 int idx = -1;
                 switch (seekBar.getId()){
                     case R.id.dimmerBar1: idx = 0;  break;
@@ -128,11 +101,7 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.dimmerBar7: idx = 6;  break;
                     case R.id.dimmerBar8: idx = 7;  break;
                 }
-                if(idx >= 0){
-                    channelData.channels[idx].value = progress;
-                    ChannelData.Channel ch = channelData.channels[idx];
-                    soundChannelMixJNI(idx, ch.getAudioALeft(),ch.getAudioARight(),ch.getAudioBLeft(),ch.getAudioBRight());
-                }
+                if(idx >= 0)channelData.setChannelValue(idx, progress);
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {  }
@@ -141,36 +110,21 @@ public class MainActivity extends AppCompatActivity {
             public void onStartTrackingTouch(SeekBar seekBar) {  }
         }
 
-        class PlaySoundCheckBoxListener implements View.OnClickListener
-        {
+        class PlaySoundCheckBoxListener implements View.OnClickListener{
             @Override
-            public void onClick(View v) {
+            public void onClick(View v){
+                int idx = -1;
                 switch (v.getId()){
-                    case R.id.playCheck1:
-                        playPause(((CheckBox) v).isChecked(), 0);
-                        break;
-                    case R.id.playCheck2:
-                        playPause(((CheckBox) v).isChecked(), 1);
-                        break;
-                    case R.id.playCheck3:
-                        playPause(((CheckBox) v).isChecked(), 2);
-                        break;
-                    case R.id.playCheck4:
-                        playPause(((CheckBox) v).isChecked(), 3);
-                        break;
-                    case R.id.playCheck5:
-                        playPause(((CheckBox) v).isChecked(), 4);
-                        break;
-                    case R.id.playCheck6:
-                        playPause(((CheckBox) v).isChecked(), 5);
-                        break;
-                    case R.id.playCheck7:
-                        playPause(((CheckBox) v).isChecked(), 6);
-                        break;
-                    case R.id.playCheck8:
-                        playPause(((CheckBox) v).isChecked(), 7);
-                        break;
+                    case R.id.playCheck1: idx = 0; break;
+                    case R.id.playCheck2: idx = 1; break;
+                    case R.id.playCheck3: idx = 2; break;
+                    case R.id.playCheck4: idx = 3; break;
+                    case R.id.playCheck5: idx = 4; break;
+                    case R.id.playCheck6: idx = 5; break;
+                    case R.id.playCheck7: idx = 6; break;
+                    case R.id.playCheck8: idx = 7; break;
                 }
+                if(idx >= 0)channelData.playStop(idx, ((CheckBox) v).isChecked());
             }
         }
 
@@ -241,31 +195,28 @@ public class MainActivity extends AppCompatActivity {
         checkController();
 
         org.fmod.FMOD.init(this);
-// ???
-//        mThread = new Thread(this, "Example Main");
-//        mThread.start();
 
         createFMODJNI();
-        loadSoundJNI("file:///android_asset/voice_1.wav",0);
-        loadSoundJNI("file:///android_asset/voice_2.wav",1);
-        loadSoundJNI("file:///android_asset/voice_3.wav",2);
-        loadSoundJNI("file:///android_asset/voice_4.wav",3);
-        loadSoundJNI("file:///android_asset/voice_5.wav",4);
-        loadSoundJNI("file:///android_asset/voice_6.wav",5);
-        loadSoundJNI("file:///android_asset/voice_7.wav",6);
-        loadSoundJNI("file:///android_asset/voice_8.wav",7);
+        channelData.loadSoundJNI("file:///android_asset/voice_1.wav",0);
+        channelData.loadSoundJNI("file:///android_asset/voice_2.wav",1);
+        channelData.loadSoundJNI("file:///android_asset/voice_3.wav",2);
+        channelData.loadSoundJNI("file:///android_asset/voice_4.wav",3);
+        channelData.loadSoundJNI("file:///android_asset/voice_5.wav",4);
+        channelData.loadSoundJNI("file:///android_asset/voice_6.wav",5);
+        channelData.loadSoundJNI("file:///android_asset/voice_7.wav",6);
+        channelData.loadSoundJNI("file:///android_asset/voice_8.wav",7);
 
         this.updateJNIDebugStrings();
 
-        //fixedThreadPool = Executors.newFixedThreadPool(1);
-
         new MyTask().execute("test");
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
     }
     public void checkController(){
         for(int deviceId: InputDevice.getDeviceIds()) {
@@ -282,6 +233,7 @@ public class MainActivity extends AppCompatActivity {
             case 0:
                 SeekBar bar1 = (SeekBar) findViewById(R.id.dimmerBar1);
                 bar1.setProgress((int)(255.0f * value));
+                //channelData.setChannelValue(0, val);
                 break;
             case 1:
                 SeekBar bar2 = (SeekBar) findViewById(R.id.dimmerBar2);
@@ -433,23 +385,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void playPause(boolean play, int index){
-        if(play){
-            playSoundJNI(index);
-        }else{
-            stopSoundJNI(index);
-        }
-    }
     /**
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
      */
     public native String getDebugStringJNI();
-    public native int loadSoundJNI(String filename, int index);
-    public native int playSoundJNI(int index);
-    public native int stopSoundJNI(int index);
-    public native int soundChannelMixJNI(int index, float Al, float Ar, float Bl, float Br);
-    public native boolean isPlayingSoundJNI(int index);
     public native int createFMODJNI();
     public native int CRC8JNI(int data[], int len);
 }
