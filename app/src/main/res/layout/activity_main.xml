@@ -23,7 +23,7 @@
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:paddingLeft="10dp"
-                android:text="Light&Sound Controller"
+                android:text="Light/Sound Controller"
                 android:textColor="@android:color/holo_orange_light"
                 android:textSize="18sp"
                 android:textStyle="bold" />

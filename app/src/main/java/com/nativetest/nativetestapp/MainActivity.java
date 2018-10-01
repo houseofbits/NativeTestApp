@@ -1,5 +1,6 @@
 package com.nativetest.nativetestapp;
 
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
     private SerialComunication serial = new SerialComunication(this);
     public ChannelData channelData = new ChannelData();
     private static final String TAG = "NativetestLog";
+    public static final String savedPrefsName = "NativeTestAppSettings";
+
 
     private String debugData = "";
 
@@ -206,12 +209,18 @@ public class MainActivity extends AppCompatActivity {
         channelData.loadSoundJNI("file:///android_asset/voice_7.wav",6);
         channelData.loadSoundJNI("file:///android_asset/voice_8.wav",7);
 
-        this.updateJNIDebugStrings();
-
         new MyTask().execute("test");
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        loadAppPreferences();
+
+        for(int i=0; i<8; i++){
+            int resID = getResources().getIdentifier("playCheck"+Integer.toString(i+1), "id", getPackageName());
+            ((CheckBox) findViewById(resID)).setChecked(channelData.isPlaying(i));
+        }
+
+        this.updateJNIDebugStrings();
     }
 
     @Override
@@ -227,7 +236,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
+    @Override
+    protected void onStop() {
+        super.onStop();
+        saveAppPreferences();
+    }
     public void setAxisChange(int index, float value){
         switch(index){
             case 0:
@@ -383,6 +396,17 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(result);
             // do something with result
         }
+    }
+
+    public void loadAppPreferences(){
+        SharedPreferences settings = getSharedPreferences(savedPrefsName, 0);
+        channelData.loadSettings(settings);
+    }
+    public void saveAppPreferences(){
+        SharedPreferences settings = getSharedPreferences(savedPrefsName, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        channelData.saveSettings(editor);
+        editor.commit();
     }
 
     /**

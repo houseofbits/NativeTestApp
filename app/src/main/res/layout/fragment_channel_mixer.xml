@@ -1,0 +1,153 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#CBA"
+    android:backgroundTint="@color/colorPrimaryDark"
+    android:backgroundTintMode="src_over"
+    android:padding="10dp"
+    tools:context=".ChannelMixerFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_weight="0"
+                android:src="@android:drawable/ic_lock_silent_mode_off" />
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="35dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0"
+                android:paddingLeft="2dp"
+                android:text="AL"
+                android:textAlignment="viewStart"
+                android:textColor="@android:color/holo_green_light"
+                android:textSize="12sp" />
+
+            <SeekBar
+                android:id="@+id/seekBar"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:max="100"
+                android:progress="40" />
+
+            <SeekBar
+                android:id="@+id/seekBar2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:max="100"
+                android:progress="35" />
+
+            <TextView
+                android:id="@+id/textView10"
+                android:layout_width="35dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0"
+                android:paddingLeft="2dp"
+                android:text="AR"
+                android:textAlignment="viewEnd"
+                android:textColor="@android:color/holo_green_light"
+                android:textSize="12sp" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_weight="0"
+                android:src="@android:drawable/ic_lock_silent_mode_off" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="199dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/cutom_border">
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/floatingActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:src="@android:drawable/ic_menu_mylocation" />
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_weight="0"
+                android:src="@android:drawable/ic_lock_silent_mode_off" />
+
+            <TextView
+                android:id="@+id/textView91"
+                android:layout_width="35dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0"
+                android:paddingLeft="2dp"
+                android:text="BL"
+                android:textAlignment="viewStart"
+                android:textColor="@android:color/holo_green_light"
+                android:textSize="12sp" />
+
+            <SeekBar
+                android:id="@+id/seekBar1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="100"
+                android:progress="40" />
+
+            <SeekBar
+                android:id="@+id/seekBar21"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="100"
+                android:progress="35" />
+
+            <TextView
+                android:id="@+id/textView101"
+                android:layout_width="35dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0"
+                android:paddingRight="2dp"
+                android:text="BR"
+                android:textAlignment="viewEnd"
+                android:textColor="@android:color/holo_green_light"
+                android:textSize="12sp" />
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_weight="0"
+                android:src="@android:drawable/ic_lock_silent_mode_off" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>
