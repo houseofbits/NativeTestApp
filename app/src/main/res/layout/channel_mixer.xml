@@ -1,18 +1,21 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#CBA"
-    android:backgroundTint="@color/colorPrimaryDark"
-    android:backgroundTintMode="src_over"
-    android:padding="10dp"
-    tools:context=".ChannelMixerFragment">
+    android:background="@color/colorPrimaryDark"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".MainActivity"
+    tools:showIn="@layout/activity_main">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_margin="10dp"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="10dp"
+        tools:layout_editor_absoluteY="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,7 +30,7 @@
                 android:src="@android:drawable/ic_lock_silent_mode_off" />
 
             <TextView
-                android:id="@+id/textView9"
+                android:id="@+id/textChanAL"
                 android:layout_width="35dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0"
@@ -38,23 +41,23 @@
                 android:textSize="12sp" />
 
             <SeekBar
-                android:id="@+id/seekBar"
+                android:id="@+id/seekChanAL"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:max="100"
                 android:progress="40" />
 
             <SeekBar
-                android:id="@+id/seekBar2"
+                android:id="@+id/seekChanAR"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:max="100"
                 android:progress="35" />
 
             <TextView
-                android:id="@+id/textView10"
+                android:id="@+id/textChanAR"
                 android:layout_width="35dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0"
@@ -74,7 +77,7 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="199dp"
+            android:layout_height="183dp"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="15dp"
@@ -103,7 +106,7 @@
                 android:src="@android:drawable/ic_lock_silent_mode_off" />
 
             <TextView
-                android:id="@+id/textView91"
+                android:id="@+id/textChanBL"
                 android:layout_width="35dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0"
@@ -114,7 +117,7 @@
                 android:textSize="12sp" />
 
             <SeekBar
-                android:id="@+id/seekBar1"
+                android:id="@+id/seekChanBL"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -122,7 +125,7 @@
                 android:progress="40" />
 
             <SeekBar
-                android:id="@+id/seekBar21"
+                android:id="@+id/seekChanBR"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -130,7 +133,7 @@
                 android:progress="35" />
 
             <TextView
-                android:id="@+id/textView101"
+                android:id="@+id/textChanBR"
                 android:layout_width="35dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0"
@@ -150,4 +153,4 @@
 
     </LinearLayout>
 
-</FrameLayout>
+</android.support.constraint.ConstraintLayout>

@@ -1,8 +1,10 @@
 package com.nativetest.nativetestapp;
 
+import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.app.FragmentManager;
 import android.util.Log;
 import android.view.InputDevice;
 import android.view.MotionEvent;
@@ -15,19 +17,21 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.TextView;
 
 //<permissions>
 //        <feature name="android.hardware.usb.host"/>
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity
+        extends AppCompatActivity
+        implements View.OnClickListener {
 
     private SerialComunication serial = new SerialComunication(this);
     public ChannelData channelData = new ChannelData();
     private static final String TAG = "NativetestLog";
     public static final String savedPrefsName = "NativeTestAppSettings";
-
-
     private String debugData = "";
+    public int editSelectedChannel = 0;
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -80,13 +84,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button sendButton = findViewById(R.id.uartSendButton);
-        sendButton.setOnClickListener(new View.OnClickListener(){
+        final Button closeChannelMixerButton = findViewById(R.id.closeChannelMixerButton);
+        closeChannelMixerButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                //serial.writeDataFrame(channelData);
-//                if(channelData.isPlayingSoundJNI(0))channelData.stopSoundJNI(0);
-//                else channelData.playSoundJNI(0);
+            View channelMixer = findViewById(R.id.channelMixerView);
+            if(channelMixer.getVisibility() == View.VISIBLE) {
+                channelMixer.setVisibility(View.INVISIBLE);
+                closeChannelMixerButton.setVisibility(View.INVISIBLE);
+                ((TextView)findViewById(R.id.titleTextView)).setText(R.string.appTitle);
+            }
             }
         });
 
@@ -94,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser){
                 int idx = -1;
+                float val = 0;
                 switch (seekBar.getId()){
                     case R.id.dimmerBar1: idx = 0;  break;
                     case R.id.dimmerBar2: idx = 1;  break;
@@ -103,6 +111,31 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.dimmerBar6: idx = 5;  break;
                     case R.id.dimmerBar7: idx = 6;  break;
                     case R.id.dimmerBar8: idx = 7;  break;
+
+                    case R.id.seekChanAL:
+                        val = (float)seekBar.getProgress() / 100.0f;
+                        ((TextView)findViewById(R.id.textChanAL)).setText(Float.toString(val));
+                        channelData.channels[editSelectedChannel].audioALeft = val;
+                        channelData.setChannelValue(idx);
+                        break;
+                    case R.id.seekChanAR:
+                        val = (float)seekBar.getProgress() / 100.0f;
+                        ((TextView)findViewById(R.id.textChanAR)).setText(Float.toString(val));
+                        channelData.channels[editSelectedChannel].audioARight = val;
+                        channelData.setChannelValue(idx);
+                        break;
+                    case R.id.seekChanBL:
+                        val = (float)seekBar.getProgress() / 100.0f;
+                        ((TextView)findViewById(R.id.textChanBL)).setText(Float.toString(val));
+                        channelData.channels[editSelectedChannel].audioBLeft = val;
+                        channelData.setChannelValue(idx);
+                        break;
+                    case R.id.seekChanBR:
+                        val = (float)seekBar.getProgress() / 100.0f;
+                        ((TextView)findViewById(R.id.textChanBR)).setText(Float.toString(val));
+                        channelData.channels[editSelectedChannel].audioBRight = val;
+                        channelData.setChannelValue(idx);
+                        break;
                 }
                 if(idx >= 0)channelData.setChannelValue(idx, progress);
             }
@@ -113,85 +146,18 @@ public class MainActivity extends AppCompatActivity {
             public void onStartTrackingTouch(SeekBar seekBar) {  }
         }
 
-        class PlaySoundCheckBoxListener implements View.OnClickListener{
-            @Override
-            public void onClick(View v){
-                int idx = -1;
-                switch (v.getId()){
-                    case R.id.playCheck1: idx = 0; break;
-                    case R.id.playCheck2: idx = 1; break;
-                    case R.id.playCheck3: idx = 2; break;
-                    case R.id.playCheck4: idx = 3; break;
-                    case R.id.playCheck5: idx = 4; break;
-                    case R.id.playCheck6: idx = 5; break;
-                    case R.id.playCheck7: idx = 6; break;
-                    case R.id.playCheck8: idx = 7; break;
-                }
-                if(idx >= 0)channelData.playStop(idx, ((CheckBox) v).isChecked());
-            }
-        }
-
         DimmerBarChangeListener dimmerBarChangeListener = new DimmerBarChangeListener();
-        PlaySoundCheckBoxListener playSoundCheckBoxListener = new PlaySoundCheckBoxListener();
 
-        findViewById(R.id.playCheck1).setOnClickListener(playSoundCheckBoxListener);
         ((SeekBar) findViewById(R.id.dimmerBar1)).setOnSeekBarChangeListener(dimmerBarChangeListener);
-
-        findViewById(R.id.playCheck2).setOnClickListener(playSoundCheckBoxListener);
         ((SeekBar) findViewById(R.id.dimmerBar2)).setOnSeekBarChangeListener(dimmerBarChangeListener);
-
-        findViewById(R.id.playCheck3).setOnClickListener(playSoundCheckBoxListener);
         ((SeekBar) findViewById(R.id.dimmerBar3)).setOnSeekBarChangeListener(dimmerBarChangeListener);
-
-        findViewById(R.id.playCheck4).setOnClickListener(playSoundCheckBoxListener);
         ((SeekBar) findViewById(R.id.dimmerBar4)).setOnSeekBarChangeListener(dimmerBarChangeListener);
-
-        findViewById(R.id.playCheck5).setOnClickListener(playSoundCheckBoxListener);
         ((SeekBar) findViewById(R.id.dimmerBar5)).setOnSeekBarChangeListener(dimmerBarChangeListener);
-
-        findViewById(R.id.playCheck6).setOnClickListener(playSoundCheckBoxListener);
         ((SeekBar) findViewById(R.id.dimmerBar6)).setOnSeekBarChangeListener(dimmerBarChangeListener);
-
-        findViewById(R.id.playCheck7).setOnClickListener(playSoundCheckBoxListener);
         ((SeekBar) findViewById(R.id.dimmerBar7)).setOnSeekBarChangeListener(dimmerBarChangeListener);
-
-        findViewById(R.id.playCheck8).setOnClickListener(playSoundCheckBoxListener);
         ((SeekBar) findViewById(R.id.dimmerBar8)).setOnSeekBarChangeListener(dimmerBarChangeListener);
 
         this.addDebugString("Starting Native Test App");
-
-///////////////////////////////////////////////////////////////////////
-// Debug
-//        channelData.val0 = 1;
-//        channelData.val1 = 2;
-//        channelData.val2 = 3;
-//        channelData.val3 = 4;
-//        serial.writeDataFrame(channelData);
-
-//        int[] crcInData = {255,122,54};
-//        int crc_val = CRC8JNI(crcInData, 3);
-//        this.addDebugString("CRC = "+Integer.toString(crc_val));
-
-//        byte out = bytetestJNI((byte)60);
-//        this.addDebugString("int 60 = "+Byte.toString(out));
-//        out = bytetestJNI((byte)128);
-//        this.addDebugString("int 128 = "+Byte.toString(out));
-//        out = bytetestJNI((byte)255);
-//        this.addDebugString("int 255 = "+Byte.toString(out));
-//        out = bytetestJNI((byte)185);
-//        this.addDebugString("int 185 = "+Byte.toString(out));
-
-//        mUsbManager = (UsbManager) getSystemService(USB_SERVICE);
-//        for (final UsbDevice usbDevice : mUsbManager.getDeviceList().values()) {
-//
-//            String name = usbDevice.getDeviceName();
-//            String productName = usbDevice.getProductName();
-//            String serialNumber = usbDevice.getSerialNumber();
-//
-//            this.addDebugString("USB Device name: "+name);
-//            this.addDebugString(" Product name: "+productName);
-//            this.addDebugString(" Serial number: "+serialNumber);
-//        }
 
         serial.connectDevice();
 
@@ -221,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         this.updateJNIDebugStrings();
+
     }
 
     @Override
@@ -407,6 +374,37 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = settings.edit();
         channelData.saveSettings(editor);
         editor.commit();
+    }
+
+    public void onClick(View view){
+        String tag = getResources().getResourceEntryName(view.getId());
+        if(tag.indexOf("channelButton") >= 0){
+            int idx = Integer.parseInt(tag.substring(tag.length() - 1));
+            if(idx > 0 && idx <=8){
+                initChannelMixer(idx-1);
+            }
+        }
+        if(tag.indexOf("playCheck") >= 0){
+            int idx = Integer.parseInt(tag.substring(tag.length() - 1));
+            if(idx > 0 && idx <=8){
+                channelData.playStop(idx-1, ((CheckBox) view).isChecked());
+            }
+        }
+    }
+
+    public void initChannelMixer(int index){
+        editSelectedChannel = index;
+
+        ChannelData.Channel ch = channelData.channels[index];
+
+        ((TextView)findViewById(R.id.textChanAL)).setText(Float.toString(ch.audioALeft));
+        ((TextView)findViewById(R.id.textChanAR)).setText(Float.toString(ch.audioARight));
+        ((TextView)findViewById(R.id.textChanBL)).setText(Float.toString(ch.audioBLeft));
+        ((TextView)findViewById(R.id.textChanBR)).setText(Float.toString(ch.audioBRight));
+
+        ((TextView)findViewById(R.id.titleTextView)).setText("Edit channel "+Integer.toString(index+1));
+        findViewById(R.id.channelMixerView).setVisibility(View.VISIBLE);
+        findViewById(R.id.closeChannelMixerButton).setVisibility(View.VISIBLE);
     }
 
     /**

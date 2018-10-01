@@ -126,11 +126,11 @@ public class SerialComunication {
             try {
                 mSerialPort.write(data, 0);
             } catch (IOException e) {
-                Log.i("UART", "UART Write failed " + e.getMessage());
+             //   Log.i("UART", "UART Write failed " + e.getMessage());
                 //main.addDebugString("UART Write failed " + e.getMessage());
             }
         }else{
-            Log.i("UART", "UART Write failed, no serial port present");
+        //    Log.i("UART", "UART Write failed, no serial port present");
             //main.addDebugString("UART Write failed, no serial port present");
         }
     }
