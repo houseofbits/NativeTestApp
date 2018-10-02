@@ -3,6 +3,7 @@ package com.nativetest.nativetestapp;
 import android.content.Context;
 import android.support.design.widget.FloatingActionButton;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -35,11 +36,16 @@ public class MovableFloatingActionButton extends FloatingActionButton implements
 
     public void setUnitLengthPosition(float x, float y){
 
+        int viewWidth = getWidth();
+        int viewHeight = getHeight();
+
         int parentWidth = ((View)getParent()).getWidth();
         int parentHeight = ((View)getParent()).getHeight();
 
-        float nx = x * (float)parentWidth;
-        float ny = y * (float)parentHeight;
+        float nx = (x * (float)parentWidth) - viewWidth * 0.5f;
+        float ny = (y * (float)parentHeight) - viewHeight * 0.5f;
+
+        //Log.i("unitpos", nx+","+ny+" | "+parentWidth+","+parentHeight);
 
         animate()
             .x(nx)
@@ -101,6 +107,8 @@ public class MovableFloatingActionButton extends FloatingActionButton implements
 
             //((TextView)findViewById(R.id.textChanAL)).setText(Float.toString(newX / parentWidth));
             //((TextView)findViewById(R.id.textChanAR)).setText(Float.toString(newY / parentHeight));
+
+            Log.i("move", newX+", "+newY);
 
             view.animate()
                     .x(newX)

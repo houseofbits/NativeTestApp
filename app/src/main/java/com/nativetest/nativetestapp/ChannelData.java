@@ -1,6 +1,7 @@
 package com.nativetest.nativetestapp;
 
 import android.content.SharedPreferences;
+import android.util.Log;
 
 public class ChannelData {
     public class Channel{
@@ -58,6 +59,8 @@ public class ChannelData {
         }
     }
     public void setChannelValue(int index){
+        if(index < 0)return;
+        if(index > channels.length-1)return;
         setChannelValue(index, channels[index].value);
     }
     public void setChannelValue(int index, int value){
@@ -114,11 +117,19 @@ public class ChannelData {
         // 0:0 = 0
         // pos = 0.5f - ((right - left) * 0.5f);
         //
-        float p0_x = 0.5f - ((getChannelMix(index, 0) + getChannelMix(index, 1)) * 0.5f);
-        float p1_x = 0.5f - ((getChannelMix(index, 2) + getChannelMix(index, 3)) * 0.5f);
-        float p2_y = 0.5f - ((getChannelMix(index, 0) + getChannelMix(index, 2)) * 0.5f);
-        float p3_y = 0.5f - ((getChannelMix(index, 1) + getChannelMix(index, 3)) * 0.5f);
+        float p0_x = 0.5f - ((getChannelMix(index, 0) - getChannelMix(index, 1)) * 0.5f);
 //
+//        float al = getChannelMix(index, 0);
+//        float ar = getChannelMix(index, 1);
+//
+//        Log.i("vpos", p0_x+" | "+al+", "+ar);
+
+        float p1_x = 0.5f - ((getChannelMix(index, 2) - getChannelMix(index, 3)) * 0.5f);
+        float p2_y = 0.5f - ((getChannelMix(index, 0) - getChannelMix(index, 2)) * 0.5f);
+        float p3_y = 0.5f - ((getChannelMix(index, 1) - getChannelMix(index, 3)) * 0.5f);
+//
+//        Log.i("vpos", p0_x+","+p1_x+" | "+p2_y+","+p3_y);
+
 //        //p0:p1 - vertical
 //        //p2:p3 - horizontal
 //
@@ -133,6 +144,8 @@ public class ChannelData {
         float s, t;
         s = (-1.0f * p0_x + s1_x * -p2_y) / (-1.0f + s1_x * s2_y);
         t = (1.0f * -p2_y - s2_y * p0_x) / (-1.0f + s1_x * s2_y);
+
+//        Log.i("pos", s+","+t);
 
         if(Float.isNaN(s) || Float.isNaN(t)){
             channels[index].virtualPosX = 0.5f;

@@ -117,28 +117,28 @@ public class MainActivity
                         val = (float)seekBar.getProgress() / 100.0f;
                         ((TextView)findViewById(R.id.textChanAL)).setText(Float.toString(val));
                         channelData.setChannelMix(editSelectedChannel, 0, val);
-                        //channelData.setChannelValue(idx);
+                        channelData.setChannelValue(editSelectedChannel);
                         updateChannelMixerTarget();
                         break;
                     case R.id.seekChanAR:
                         val = (float)seekBar.getProgress() / 100.0f;
                         ((TextView)findViewById(R.id.textChanAR)).setText(Float.toString(val));
                         channelData.setChannelMix(editSelectedChannel, 1, val);
-                        //channelData.setChannelValue(idx);
+                        channelData.setChannelValue(editSelectedChannel);
                         updateChannelMixerTarget();
                         break;
                     case R.id.seekChanBL:
                         val = (float)seekBar.getProgress() / 100.0f;
                         ((TextView)findViewById(R.id.textChanBL)).setText(Float.toString(val));
                         channelData.setChannelMix(editSelectedChannel, 2, val);
-                        //channelData.setChannelValue(idx);
+                        channelData.setChannelValue(editSelectedChannel);
                         updateChannelMixerTarget();
                         break;
                     case R.id.seekChanBR:
                         val = (float)seekBar.getProgress() / 100.0f;
                         ((TextView)findViewById(R.id.textChanBR)).setText(Float.toString(val));
                         channelData.setChannelMix(editSelectedChannel, 3, val);
-                        //channelData.setChannelValue(idx);
+                        channelData.setChannelValue(editSelectedChannel);
                         updateChannelMixerTarget();
                         break;
                 }
@@ -279,69 +279,9 @@ public class MainActivity
         axis_3 = (axis_3 + 1.0f) * 0.5f;
         setAxisChange(3, axis_3);
 
-
-        //int historySize = event.getHistorySize();
-        //for (int i = 0; i < historySize; i++) {
-            // Process the event at historical position i
-            //this.addDebugString("JOYSTICKMOVE "+event.getHistoricalAxisValue(MotionEvent.AXIS_Y,i)+"  "+event.getHistoricalAxisValue(MotionEvent.AXIS_Z,i));
-           // processJoystickInput(event,  i);
-       // }
-        // Process current position
-        //this.addDebugString("JOYSTICKMOVE "+event.getAxisValue(MotionEvent.AXIS_Y)+" "+event.getAxisValue(MotionEvent.AXIS_Z));
-
         return true;
     }
-    /*
-    private void processJoystickInput(MotionEvent event, int historyPos) {
 
-        InputDevice mInputDevice = event.getDevice();
-
-        // Calculate the horizontal distance to move by
-        // using the input value from one of these physical controls:
-        // the left control stick, hat axis, or the right control stick.
-        float x = getCenteredAxis(event, mInputDevice, MotionEvent.AXIS_X, historyPos);
-        if (x == 0) {
-            x = getCenteredAxis(event, mInputDevice, MotionEvent.AXIS_HAT_X, historyPos);
-        }
-        if (x == 0) {
-            x = getCenteredAxis(event, mInputDevice, MotionEvent.AXIS_Z, historyPos);
-        }
-
-        // Calculate the vertical distance to move by
-        // using the input value from one of these physical controls:
-        // the left control stick, hat switch, or the right control stick.
-        float y = getCenteredAxis(event, mInputDevice, MotionEvent.AXIS_Y, historyPos);
-        if (y == 0) {
-            y = getCenteredAxis(event, mInputDevice, MotionEvent.AXIS_HAT_Y, historyPos);
-        }
-        if (y == 0) {
-            y = getCenteredAxis(event, mInputDevice, MotionEvent.AXIS_RZ, historyPos);
-        }
-
-        // Update the ship object based on the new x and y values
-    }
-    private static float getCenteredAxis(MotionEvent event, InputDevice device, int axis, int historyPos) {
-        final InputDevice.MotionRange range =
-                device.getMotionRange(axis, event.getSource());
-
-        // A joystick at rest does not always report an absolute position of
-        // (0,0). Use the getFlat() method to determine the range of values
-        // bounding the joystick axis center.
-        if (range != null) {
-            final float flat = range.getFlat();
-            final float value =
-                    historyPos < 0 ? event.getAxisValue(axis):
-                            event.getHistoricalAxisValue(axis, historyPos);
-
-            // Ignore axis values that are within the 'flat' region of the
-            // joystick axis center.
-            if (Math.abs(value) > flat) {
-                return value;
-            }
-        }
-        return 0;
-    }
-*/
     private boolean isController(InputDevice device) {
         return ((device.getSources() & InputDevice.SOURCE_CLASS_JOYSTICK) == InputDevice.SOURCE_CLASS_JOYSTICK)
                 && (((device.getSources() & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD)
@@ -421,22 +361,9 @@ public class MainActivity
     }
 
     public void updateChannelMixerTarget(){
-
         channelData.calculateVirtualPosition(editSelectedChannel);
-
-//        MovableFloatingActionButton target = (MovableFloatingActionButton)findViewById(R.id.channelMixerTargetButton);
-//        target.setUnitLengthPosition(s, t);
-
-//        float s1_x, s1_y, s2_x, s2_y;
-//        s1_x = p1_x - p0_x;     s1_y = p1_y - p0_y;
-//        s2_x = p3_x - p2_x;     s2_y = p3_y - p2_y;
-//
-//        float s, t;
-//        s = (-s1_y * (p0_x - p2_x) + s1_x * (p0_y - p2_y)) / (-s2_x * s1_y + s1_x * s2_y);
-//        t = ( s2_x * (p0_y - p2_y) - s2_y * (p0_x - p2_x)) / (-s2_x * s1_y + s1_x * s2_y);
-
-
-
+        MovableFloatingActionButton target = (MovableFloatingActionButton)findViewById(R.id.channelMixerTargetButton);
+        target.setUnitLengthPosition(channelData.getVirtualPosX(editSelectedChannel), channelData.getVirtualPosY(editSelectedChannel));
     }
 
     /**
