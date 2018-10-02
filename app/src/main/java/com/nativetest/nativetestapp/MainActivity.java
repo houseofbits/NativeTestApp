@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.FragmentManager;
 import android.util.Log;
+import android.util.Xml;
 import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.WindowManager;
@@ -115,26 +116,30 @@ public class MainActivity
                     case R.id.seekChanAL:
                         val = (float)seekBar.getProgress() / 100.0f;
                         ((TextView)findViewById(R.id.textChanAL)).setText(Float.toString(val));
-                        channelData.channels[editSelectedChannel].audioALeft = val;
-                        channelData.setChannelValue(idx);
+                        channelData.setChannelMix(editSelectedChannel, 0, val);
+                        //channelData.setChannelValue(idx);
+                        updateChannelMixerTarget();
                         break;
                     case R.id.seekChanAR:
                         val = (float)seekBar.getProgress() / 100.0f;
                         ((TextView)findViewById(R.id.textChanAR)).setText(Float.toString(val));
-                        channelData.channels[editSelectedChannel].audioARight = val;
-                        channelData.setChannelValue(idx);
+                        channelData.setChannelMix(editSelectedChannel, 1, val);
+                        //channelData.setChannelValue(idx);
+                        updateChannelMixerTarget();
                         break;
                     case R.id.seekChanBL:
                         val = (float)seekBar.getProgress() / 100.0f;
                         ((TextView)findViewById(R.id.textChanBL)).setText(Float.toString(val));
-                        channelData.channels[editSelectedChannel].audioBLeft = val;
-                        channelData.setChannelValue(idx);
+                        channelData.setChannelMix(editSelectedChannel, 2, val);
+                        //channelData.setChannelValue(idx);
+                        updateChannelMixerTarget();
                         break;
                     case R.id.seekChanBR:
                         val = (float)seekBar.getProgress() / 100.0f;
                         ((TextView)findViewById(R.id.textChanBR)).setText(Float.toString(val));
-                        channelData.channels[editSelectedChannel].audioBRight = val;
-                        channelData.setChannelValue(idx);
+                        channelData.setChannelMix(editSelectedChannel, 3, val);
+                        //channelData.setChannelValue(idx);
+                        updateChannelMixerTarget();
                         break;
                 }
                 if(idx >= 0)channelData.setChannelValue(idx, progress);
@@ -147,6 +152,11 @@ public class MainActivity
         }
 
         DimmerBarChangeListener dimmerBarChangeListener = new DimmerBarChangeListener();
+
+        ((SeekBar) findViewById(R.id.seekChanAL)).setOnSeekBarChangeListener(dimmerBarChangeListener);
+        ((SeekBar) findViewById(R.id.seekChanAR)).setOnSeekBarChangeListener(dimmerBarChangeListener);
+        ((SeekBar) findViewById(R.id.seekChanBL)).setOnSeekBarChangeListener(dimmerBarChangeListener);
+        ((SeekBar) findViewById(R.id.seekChanBR)).setOnSeekBarChangeListener(dimmerBarChangeListener);
 
         ((SeekBar) findViewById(R.id.dimmerBar1)).setOnSeekBarChangeListener(dimmerBarChangeListener);
         ((SeekBar) findViewById(R.id.dimmerBar2)).setOnSeekBarChangeListener(dimmerBarChangeListener);
@@ -395,16 +405,38 @@ public class MainActivity
     public void initChannelMixer(int index){
         editSelectedChannel = index;
 
-        ChannelData.Channel ch = channelData.channels[index];
+        ((TextView)findViewById(R.id.textChanAL)).setText(Float.toString(channelData.getChannelMix(editSelectedChannel, 0)));
+        ((TextView)findViewById(R.id.textChanAR)).setText(Float.toString(channelData.getChannelMix(editSelectedChannel, 1)));
+        ((TextView)findViewById(R.id.textChanBL)).setText(Float.toString(channelData.getChannelMix(editSelectedChannel, 2)));
+        ((TextView)findViewById(R.id.textChanBR)).setText(Float.toString(channelData.getChannelMix(editSelectedChannel, 3)));
 
-        ((TextView)findViewById(R.id.textChanAL)).setText(Float.toString(ch.audioALeft));
-        ((TextView)findViewById(R.id.textChanAR)).setText(Float.toString(ch.audioARight));
-        ((TextView)findViewById(R.id.textChanBL)).setText(Float.toString(ch.audioBLeft));
-        ((TextView)findViewById(R.id.textChanBR)).setText(Float.toString(ch.audioBRight));
+        ((SeekBar) findViewById(R.id.seekChanAL)).setProgress((int)(channelData.getChannelMix(editSelectedChannel, 0) * 100.0f));
+        ((SeekBar) findViewById(R.id.seekChanAR)).setProgress((int)(channelData.getChannelMix(editSelectedChannel, 1) * 100.0f));
+        ((SeekBar) findViewById(R.id.seekChanBL)).setProgress((int)(channelData.getChannelMix(editSelectedChannel, 2) * 100.0f));
+        ((SeekBar) findViewById(R.id.seekChanBR)).setProgress((int)(channelData.getChannelMix(editSelectedChannel, 3) * 100.0f));
 
         ((TextView)findViewById(R.id.titleTextView)).setText("Edit channel "+Integer.toString(index+1));
         findViewById(R.id.channelMixerView).setVisibility(View.VISIBLE);
         findViewById(R.id.closeChannelMixerButton).setVisibility(View.VISIBLE);
+    }
+
+    public void updateChannelMixerTarget(){
+
+        channelData.calculateVirtualPosition(editSelectedChannel);
+
+//        MovableFloatingActionButton target = (MovableFloatingActionButton)findViewById(R.id.channelMixerTargetButton);
+//        target.setUnitLengthPosition(s, t);
+
+//        float s1_x, s1_y, s2_x, s2_y;
+//        s1_x = p1_x - p0_x;     s1_y = p1_y - p0_y;
+//        s2_x = p3_x - p2_x;     s2_y = p3_y - p2_y;
+//
+//        float s, t;
+//        s = (-s1_y * (p0_x - p2_x) + s1_x * (p0_y - p2_y)) / (-s2_x * s1_y + s1_x * s2_y);
+//        t = ( s2_x * (p0_y - p2_y) - s2_y * (p0_x - p2_x)) / (-s2_x * s1_y + s1_x * s2_y);
+
+
+
     }
 
     /**
