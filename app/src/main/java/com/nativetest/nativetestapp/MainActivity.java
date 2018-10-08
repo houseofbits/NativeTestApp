@@ -2,6 +2,8 @@ package com.nativetest.nativetestapp;
 
 import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.FragmentManager;
@@ -168,6 +170,19 @@ public class MainActivity
         ((SeekBar) findViewById(R.id.dimmerBar8)).setOnSeekBarChangeListener(dimmerBarChangeListener);
 
         this.addDebugString("Starting Native Test App");
+
+        UsbManager usbManager = (UsbManager) getSystemService(USB_SERVICE);
+
+        for (final UsbDevice usbDevice : usbManager.getDeviceList().values()) {
+
+            String name = usbDevice.getDeviceName();
+            String productName = usbDevice.getProductName();
+            String serialNumber = usbDevice.getSerialNumber();
+            this.addDebugString("------------------------");
+            this.addDebugString("USB Device name: "+name);
+            this.addDebugString(" Product name: "+productName);
+            this.addDebugString(" Serial number: "+serialNumber);
+        }
 
         serial.connectDevice();
 

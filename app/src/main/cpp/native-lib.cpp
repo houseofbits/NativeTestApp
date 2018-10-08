@@ -119,7 +119,7 @@ Java_com_nativetest_nativetestapp_MainActivity_createFMODJNI(
 
     addConsoleLine("========= OSS TEST ==========");
 
-    int fd = open("/dev/usb/003", O_WRONLY); //???
+    int fd = open("/dev/bus/usb/001/005", O_WRONLY); //??? /003
 
     if(fd < 0)addConsoleLine(" OSS DEV ERROR: "+std::string(strerror(errno)));
     else addConsoleLine(" OSS DEV: "+std::to_string(fd));
