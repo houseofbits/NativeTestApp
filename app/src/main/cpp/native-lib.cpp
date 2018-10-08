@@ -121,10 +121,19 @@ Java_com_nativetest_nativetestapp_MainActivity_createFMODJNI(
 
     int fd = open("/dev/usb/003", O_WRONLY); //???
 
-    if(fd < 0)addConsoleLine(" OSS DEV ERROR: "+std::to_string(errno));
+    if(fd < 0)addConsoleLine(" OSS DEV ERROR: "+std::string(strerror(errno)));
+    else addConsoleLine(" OSS DEV: "+std::to_string(fd));
 
-    addConsoleLine(" OSS DEV: "+std::to_string(fd));
-
+//    int mixerfd = open ("/dev/mixer", O_RDWR, 0);
+//    if(mixerfd < 0)addConsoleLine(" OSS MIXER ERROR: "+std::string(strerror(errno)));
+//    else{
+//        mixer_info info;
+//        int io = ioctl (mixerfd, SOUND_MIXER_INFO, &info);
+//        if(io < 0)addConsoleLine(" OSS SOUND_MIXER_INFO: "+std::string(strerror(errno)));
+//        else{
+//            addConsoleLine(" OSS SOUND_MIXER_INFO: "+std::string(info.name));
+//        }
+//    };
 
 
     addConsoleLine("=========createFMODJNI==========");
