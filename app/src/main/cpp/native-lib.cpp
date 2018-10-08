@@ -2,6 +2,16 @@
 #include <string>
 #include "../../../inc/fmod.hpp"
 
+#include <math.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <sys/ioctl.h>
+#include <linux/soundcard.h>
+#include <errno.h>
+
 std::string consoleStr = "";
 FMOD::System     *fmod_system = 0;
 FMOD::Channel    *channels[] = {0,0,0,0,0,0,0,0};
@@ -103,6 +113,19 @@ extern "C" JNIEXPORT jint JNICALL
 Java_com_nativetest_nativetestapp_MainActivity_createFMODJNI(
         JNIEnv* env,
         jobject) {
+
+    //https://github.com/Themaister/libmaru/blob/master/cuse-maru/test/sweep.c
+    //http://manuals.opensound.com/developer/oss_errno.html
+
+    addConsoleLine("========= OSS TEST ==========");
+
+    int fd = open("/dev/usb/003", O_WRONLY); //???
+
+    if(fd < 0)addConsoleLine(" OSS DEV ERROR: "+std::to_string(errno));
+
+    addConsoleLine(" OSS DEV: "+std::to_string(fd));
+
+
 
     addConsoleLine("=========createFMODJNI==========");
 
