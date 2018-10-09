@@ -1,9 +1,14 @@
 package com.nativetest.nativetestapp;
 
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
+import android.media.AudioDeviceInfo;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.FragmentManager;
@@ -15,12 +20,17 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.MediaController;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
+
+import java.io.File;
+import java.lang.reflect.Array;
+import java.util.Vector;
 
 //<permissions>
 //        <feature name="android.hardware.usb.host"/>
@@ -35,6 +45,14 @@ public class MainActivity
     public static final String savedPrefsName = "NativeTestAppSettings";
     private String debugData = "";
     public int editSelectedChannel = 0;
+
+    MediaPlayer mediaPlayerA = null;
+    MediaPlayer mediaPlayerB = null;
+
+    AudioDeviceInfo usbAudioDeviceA = null;
+    AudioDeviceInfo usbAudioDeviceB = null;
+
+//    public OSSTest ossTest = new OSSTest(this);
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -171,18 +189,102 @@ public class MainActivity
 
         this.addDebugString("Starting Native Test App");
 
-        UsbManager usbManager = (UsbManager) getSystemService(USB_SERVICE);
+        //ossTest.connectDevice();
 
-        for (final UsbDevice usbDevice : usbManager.getDeviceList().values()) {
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        try {
+            AudioDeviceInfo[] adi = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
+            for (int i = 0; i < adi.length; i++) {
+                this.addDebugString("---------- Audio device: " + adi[i].getProductName()+" ---------------");
+                int chan[] = adi[i].getChannelCounts();
+                String chanStr = "";
+                for(int a=0; a<chan.length; a++){
+                    chanStr += " "+Integer.toString(chan[a]);
+                }
+                this.addDebugString(" channels: " + chanStr);
+                this.addDebugString(" type: " + adi[i].getType());
+            }
+        }catch (NullPointerException nullPtr){
 
-            String name = usbDevice.getDeviceName();
-            String productName = usbDevice.getProductName();
-            String serialNumber = usbDevice.getSerialNumber();
-            this.addDebugString("------------------------");
-            this.addDebugString("USB Device name: "+name);
-            this.addDebugString(" Product name: "+productName);
-            this.addDebugString(" Serial number: "+serialNumber);
+            this.addDebugString("No audio devices");
+
         }
+
+        mediaPlayerA = MediaPlayer.create(this, R.raw.voice_1);
+        if(mediaPlayerA != null){
+            mediaPlayerA.setLooping(true);
+            mediaPlayerA.setVolume(1,0);
+            mediaPlayerA.start();
+        }
+
+        mediaPlayerB = MediaPlayer.create(this, R.raw.voice_2);
+        if(mediaPlayerB != null){
+            mediaPlayerB.setLooping(true);
+            mediaPlayerB.setVolume(0,1);
+            mediaPlayerB.start();
+        }
+
+        //https://stackoverflow.com/questions/26379441/playing-multiple-songs-with-mediaplayer-at-the-same-time-only-one-is-really-pla
+        class SynchronizedSound implements MediaPlayer.OnCompletionListener {
+
+            private int resourceId = 0;
+            public Vector<MediaPlayer>  mediaTargets  = new Vector<>();
+            public Vector<Float>        outputMix = new Vector<>();
+
+            public SynchronizedSound(int resid){
+                resourceId = resid;
+            }
+            public void addTargetDevice(Context context, AudioDeviceInfo deviceInfo){
+                MediaPlayer p = MediaPlayer.create(context, resourceId);
+                p.setLooping(false);
+                p.setOnCompletionListener(this);
+//                p.setPreferredDevice(deviceInfo); //api level 28 (android 9.0) :(
+                mediaTargets.add(p);
+            }
+            public void mixOutputs(){
+
+            }
+
+            public void onCompletion(MediaPlayer theMediaPlayer) {
+
+            }
+        };
+        class SynchronizedSoundManager{
+
+            public void addSound(String name, int resourceId){
+
+            }
+
+            public void addTargetDevice(Context context, AudioDeviceInfo deviceInfo){
+
+            }
+
+            public void mixOutputs(String name){
+
+            }
+        }
+
+
+//        mMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
+//
+//            public void onCompletion(MediaPlayer theMediaPlayer) {
+//                mParent.playNextAudio();
+//                mParent = null;
+//            }
+
+
+//        UsbManager usbManager = (UsbManager) getSystemService(USB_SERVICE);
+//
+//        for (final UsbDevice usbDevice : usbManager.getDeviceList().values()) {
+//
+//            String name = usbDevice.getDeviceName();
+//            String productName = usbDevice.getProductName();
+//            String serialNumber = usbDevice.getSerialNumber();
+//            this.addDebugString("------------------------");
+//            this.addDebugString("USB Device name: "+name);
+//            this.addDebugString(" Product name: "+productName);
+//            this.addDebugString(" Serial number: "+serialNumber);
+//        }
 
         serial.connectDevice();
 

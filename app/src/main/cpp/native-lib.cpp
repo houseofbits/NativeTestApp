@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <linux/usbdevice_fs.h>
 #include <sys/ioctl.h>
 #include <linux/soundcard.h>
 #include <errno.h>
@@ -117,12 +118,12 @@ Java_com_nativetest_nativetestapp_MainActivity_createFMODJNI(
     //https://github.com/Themaister/libmaru/blob/master/cuse-maru/test/sweep.c
     //http://manuals.opensound.com/developer/oss_errno.html
 
-    addConsoleLine("========= OSS TEST ==========");
-
-    int fd = open("/dev/bus/usb/001/005", O_WRONLY); //??? /003
-
-    if(fd < 0)addConsoleLine(" OSS DEV ERROR: "+std::string(strerror(errno)));
-    else addConsoleLine(" OSS DEV: "+std::to_string(fd));
+//    addConsoleLine("========= OSS TEST ==========");
+//
+//    int fd = open("/dev/bus/usb/001/005", O_WRONLY); //??? /003
+//
+//    if(fd < 0)addConsoleLine(" OSS DEV ERROR: "+std::string(strerror(errno)));
+//    else addConsoleLine(" OSS DEV: "+std::to_string(fd));
 
 //    int mixerfd = open ("/dev/mixer", O_RDWR, 0);
 //    if(mixerfd < 0)addConsoleLine(" OSS MIXER ERROR: "+std::string(strerror(errno)));
@@ -307,4 +308,82 @@ Java_com_nativetest_nativetestapp_MainActivity_CRC8JNI(
         }
     }
     return (int)crc;
+}
+
+
+
+
+extern "C" JNIEXPORT jint JNICALL
+Java_com_nativetest_nativetestapp_OSSTest_connectOSSDeviceJNI(
+        JNIEnv* env,
+        jobject,
+        jint connectionFd,
+        jint endpoint) {
+
+    //https://github.com/Themaister/libmaru/blob/master/cuse-maru/test/sweep.c
+    //http://manuals.opensound.com/developer/oss_errno.html
+
+    addConsoleLine("========= OSS TEST "+std::to_string(connectionFd)+" ==========");
+
+    struct usbdevfs_bulktransfer bt;
+//    bt.ep = usb_endpoint;  /* endpoint (received from Java) */
+//    bt.len = 1;            /* length of data */
+//    bt.timeout = 100;      /* timeout in ms */
+//    bt.data = 128;        /* the data */
+//    int rtn = ioctl(connectionFd, USBDEVFS_BULK, &bt);
+
+    unsigned char pData[] = {128,125};
+
+    usbdevfs_urb&   urbRequest      = *(usbdevfs_urb*)malloc( 384 );
+    urbRequest.type                 = USBDEVFS_URB_TYPE_ISO;
+    urbRequest.endpoint             = 5;    //mpEndpoint->GetEndpointAddress();//mpEndpoint->GetEndpointIndex();
+    urbRequest.status               = 0;
+    urbRequest.flags                = USBDEVFS_URB_ISO_ASAP;
+    urbRequest.buffer               = pData;
+    urbRequest.buffer_length        = 0;
+    urbRequest.actual_length        = 0;
+    urbRequest.start_frame          = 0;
+    urbRequest.number_of_packets    = 1;
+    urbRequest.error_count          = 0;
+    urbRequest.signr                = 0;
+    urbRequest.usercontext          = pData;
+
+//    usbdevfs_iso_packet_desc* pIsoPacketDesc    = &urbRequest.iso_frame_desc[0];
+//    pIsoPacketDesc->length          = 384;
+//    pIsoPacketDesc->actual_length   = 0;
+//    pIsoPacketDesc->status          = 0;
+
+    int r = ioctl( connectionFd, USBDEVFS_SUBMITURB, &urbRequest );
+    if (r < 0)addConsoleLine(" USBDEVFS_SUBMITURB: " + std::string(strerror(errno)));
+
+    /*
+    int r = ioctl(connectionFd, SNDCTL_DSP_SPEED, 44100);   //44.1 khz
+    if (r < 0)addConsoleLine(" SNDCTL_DSP_SPEED: " + std::string(strerror(errno)));
+
+    r = ioctl(connectionFd, SNDCTL_DSP_CHANNELS, 2);
+    if (r < 0)addConsoleLine(" SNDCTL_DSP_CHANNELS: " + std::string(strerror(errno)));
+
+    r = ioctl(connectionFd, SNDCTL_DSP_SETFMT, AFMT_S16_NE);
+    if (r < 0)addConsoleLine(" SNDCTL_DSP_SETFMT: " + std::string(strerror(errno)));
+*/
+
+//    int fd = open("/dev/bus/usb/001/005", O_WRONLY); //??? /003
+//
+//    if (fd < 0)addConsoleLine(" OSS DEV ERROR: " + std::string(strerror(errno)));
+//    else addConsoleLine(" OSS DEV: " + std::to_string(fd));
+
+
+
+
+//    int mixerfd = open ("/dev/mixer", O_RDWR, 0);
+//    if(mixerfd < 0)addConsoleLine(" OSS MIXER ERROR: "+std::string(strerror(errno)));
+//    else{
+//        mixer_info info;
+//        int io = ioctl (mixerfd, SOUND_MIXER_INFO, &info);
+//        if(io < 0)addConsoleLine(" OSS SOUND_MIXER_INFO: "+std::string(strerror(errno)));
+//        else{
+//            addConsoleLine(" OSS SOUND_MIXER_INFO: "+std::string(info.name));
+//        }
+//    };
+    return 1;
 }
