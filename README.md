@@ -1,6 +1,6 @@
 Android native application for Light&Sound control for up to 8 channels
 
--Uses FMOD library for multichannel sound playback
+-Uses FMOD library
 
 -SerialPort comunication with Arduino for light dimming
 
