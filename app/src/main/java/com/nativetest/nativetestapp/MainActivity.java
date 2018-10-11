@@ -46,11 +46,11 @@ public class MainActivity
     private String debugData = "";
     public int editSelectedChannel = 0;
 
-    MediaPlayer mediaPlayerA = null;
-    MediaPlayer mediaPlayerB = null;
-
-    AudioDeviceInfo usbAudioDeviceA = null;
-    AudioDeviceInfo usbAudioDeviceB = null;
+//    MediaPlayer mediaPlayerA = null;
+//    MediaPlayer mediaPlayerB = null;
+//
+//    AudioDeviceInfo usbAudioDeviceA = null;
+//    AudioDeviceInfo usbAudioDeviceB = null;
 
 //    public OSSTest ossTest = new OSSTest(this);
 
@@ -210,59 +210,59 @@ public class MainActivity
 
         }
 
-        mediaPlayerA = MediaPlayer.create(this, R.raw.voice_1);
-        if(mediaPlayerA != null){
-            mediaPlayerA.setLooping(true);
-            mediaPlayerA.setVolume(1,0);
-            mediaPlayerA.start();
-        }
+//        mediaPlayerA = MediaPlayer.create(this, R.raw.voice_1);
+//        if(mediaPlayerA != null){
+//            mediaPlayerA.setLooping(true);
+//            mediaPlayerA.setVolume(1,0);
+//            mediaPlayerA.start();
+//        }
+//
+//        mediaPlayerB = MediaPlayer.create(this, R.raw.voice_2);
+//        if(mediaPlayerB != null){
+//            mediaPlayerB.setLooping(true);
+//            mediaPlayerB.setVolume(0,1);
+//            mediaPlayerB.start();
+//        }
 
-        mediaPlayerB = MediaPlayer.create(this, R.raw.voice_2);
-        if(mediaPlayerB != null){
-            mediaPlayerB.setLooping(true);
-            mediaPlayerB.setVolume(0,1);
-            mediaPlayerB.start();
-        }
-
-        //https://stackoverflow.com/questions/26379441/playing-multiple-songs-with-mediaplayer-at-the-same-time-only-one-is-really-pla
-        class SynchronizedSound implements MediaPlayer.OnCompletionListener {
-
-            private int resourceId = 0;
-            public Vector<MediaPlayer>  mediaTargets  = new Vector<>();
-            public Vector<Float>        outputMix = new Vector<>();
-
-            public SynchronizedSound(int resid){
-                resourceId = resid;
-            }
-            public void addTargetDevice(Context context, AudioDeviceInfo deviceInfo){
-                MediaPlayer p = MediaPlayer.create(context, resourceId);
-                p.setLooping(false);
-                p.setOnCompletionListener(this);
-//                p.setPreferredDevice(deviceInfo); //api level 28 (android 9.0) :(
-                mediaTargets.add(p);
-            }
-            public void mixOutputs(){
-
-            }
-
-            public void onCompletion(MediaPlayer theMediaPlayer) {
-
-            }
-        };
-        class SynchronizedSoundManager{
-
-            public void addSound(String name, int resourceId){
-
-            }
-
-            public void addTargetDevice(Context context, AudioDeviceInfo deviceInfo){
-
-            }
-
-            public void mixOutputs(String name){
-
-            }
-        }
+//        //https://stackoverflow.com/questions/26379441/playing-multiple-songs-with-mediaplayer-at-the-same-time-only-one-is-really-pla
+//        class SynchronizedSound implements MediaPlayer.OnCompletionListener {
+//
+//            private int resourceId = 0;
+//            public Vector<MediaPlayer>  mediaTargets  = new Vector<>();
+//            public Vector<Float>        outputMix = new Vector<>();
+//
+//            public SynchronizedSound(int resid){
+//                resourceId = resid;
+//            }
+//            public void addTargetDevice(Context context, AudioDeviceInfo deviceInfo){
+//                MediaPlayer p = MediaPlayer.create(context, resourceId);
+//                p.setLooping(false);
+//                p.setOnCompletionListener(this);
+////                p.setPreferredDevice(deviceInfo); //api level 28 (android 9.0) :(
+//                mediaTargets.add(p);
+//            }
+//            public void mixOutputs(){
+//
+//            }
+//
+//            public void onCompletion(MediaPlayer theMediaPlayer) {
+//
+//            }
+//        };
+//        class SynchronizedSoundManager{
+//
+//            public void addSound(String name, int resourceId){
+//
+//            }
+//
+//            public void addTargetDevice(Context context, AudioDeviceInfo deviceInfo){
+//
+//            }
+//
+//            public void mixOutputs(String name){
+//
+//            }
+//        }
 
 
 //        mMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
@@ -273,18 +273,18 @@ public class MainActivity
 //            }
 
 
-//        UsbManager usbManager = (UsbManager) getSystemService(USB_SERVICE);
-//
-//        for (final UsbDevice usbDevice : usbManager.getDeviceList().values()) {
-//
-//            String name = usbDevice.getDeviceName();
-//            String productName = usbDevice.getProductName();
-//            String serialNumber = usbDevice.getSerialNumber();
-//            this.addDebugString("------------------------");
-//            this.addDebugString("USB Device name: "+name);
-//            this.addDebugString(" Product name: "+productName);
-//            this.addDebugString(" Serial number: "+serialNumber);
-//        }
+        UsbManager usbManager = (UsbManager) getSystemService(USB_SERVICE);
+
+        for (final UsbDevice usbDevice : usbManager.getDeviceList().values()) {
+
+            String name = usbDevice.getDeviceName();
+            String productName = usbDevice.getProductName();
+            String serialNumber = usbDevice.getSerialNumber();
+            this.addDebugString("------------------------");
+            this.addDebugString("USB Device name: "+name);
+            this.addDebugString(" Product name: "+productName);
+            this.addDebugString(" Serial number: "+serialNumber);
+        }
 
         serial.connectDevice();
 
