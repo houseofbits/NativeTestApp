@@ -59,6 +59,8 @@
     <include
         android:id="@+id/channelMixerView"
         layout="@layout/channel_mixer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:visibility="invisible" />
 
 </android.support.design.widget.CoordinatorLayout>

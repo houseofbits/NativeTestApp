@@ -387,3 +387,37 @@ Java_com_nativetest_nativetestapp_OSSTest_connectOSSDeviceJNI(
 //    };
     return 1;
 }
+
+FMOD_OUTPUT_DESCRIPTION customOutputDevice;
+
+void createCustomOutputDevice(){
+
+    customOutputDevice.name = "Superpowered SDK USB Device array";
+    customOutputDevice.apiversion = FMOD_OUTPUT_PLUGIN_VERSION;
+    customOutputDevice.version = 1;
+    customOutputDevice.polling = true;
+
+//    FMOD_OUTPUT_GETNUMDRIVERS_CALLBACK getnumdrivers;
+//    FMOD_OUTPUT_GETDRIVERINFO_CALLBACK getdriverinfo;
+//    FMOD_OUTPUT_INIT_CALLBACK init;
+//    FMOD_OUTPUT_START_CALLBACK start;
+//    FMOD_OUTPUT_STOP_CALLBACK stop;
+//    FMOD_OUTPUT_CLOSE_CALLBACK close;
+//    FMOD_OUTPUT_UPDATE_CALLBACK update;
+//    FMOD_OUTPUT_GETHANDLE_CALLBACK gethandle;
+//    FMOD_OUTPUT_GETPOSITION_CALLBACK getposition;
+//    FMOD_OUTPUT_LOCK_CALLBACK lock;
+//    FMOD_OUTPUT_UNLOCK_CALLBACK unlock;
+//    FMOD_OUTPUT_MIXER_CALLBACK mixer;
+//    FMOD_OUTPUT_OBJECT3DGETINFO_CALLBACK object3dgetinfo;
+//    FMOD_OUTPUT_OBJECT3DALLOC_CALLBACK object3dalloc;
+//    FMOD_OUTPUT_OBJECT3DFREE_CALLBACK object3dfree;
+//    FMOD_OUTPUT_OBJECT3DUPDATE_CALLBACK object3dupdate;
+//    FMOD_OUTPUT_OPENPORT_CALLBACK openport;
+//    FMOD_OUTPUT_CLOSEPORT_CALLBACK closeport;
+
+
+
+}
+
+
